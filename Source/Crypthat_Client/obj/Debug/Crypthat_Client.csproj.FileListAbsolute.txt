@@ -1,0 +1,11 @@
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\bin\Debug\Crypthat_Client.exe.config
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\bin\Debug\Crypthat_Client.exe
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\bin\Debug\Crypthat_Client.pdb
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\obj\Debug\Crypthat_Client.csprojResolveAssemblyReference.cache
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\obj\Debug\Crypthat_Client.Properties.Resources.resources
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\obj\Debug\Crypthat_Client.csproj.GenerateResource.Cache
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\obj\Debug\Crypthat_Client.exe
+C:\Users\m_inf2.quinta\Desktop\Crypthat\Crypthat\Crypthat_Client\obj\Debug\Crypthat_Client.pdb
+C:\Users\m_inf2.quinta\Source\Repos\CrypthatASCII\Source\Crypthat_Client\bin\Debug\Crypthat_Client.exe.config
+C:\Users\m_inf2.quinta\Source\Repos\CrypthatASCII\Source\Crypthat_Client\obj\Debug\Crypthat_Client.exe
+C:\Users\m_inf2.quinta\Source\Repos\CrypthatASCII\Source\Crypthat_Client\obj\Debug\Crypthat_Client.pdb
