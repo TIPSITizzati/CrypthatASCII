@@ -31,6 +31,7 @@ namespace Crypthat_Common
 
         #endregion
 
+
         //Costruttore
         public Identity(string Name, string SessionKey)
         {
