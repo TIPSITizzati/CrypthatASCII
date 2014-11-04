@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Crypthat_Common
 {
-    public class Class1
+    public class GestoreLogico
     {
     }
 }
