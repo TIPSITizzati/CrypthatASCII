@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypthat_Client", "Crypthat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypthat_Server", "Crypthat_Server\Crypthat_Server.csproj", "{89E73350-3C10-499C-B774-26B15F2F60C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypthat_Common", "Crypthat_Common\Crypthat_Common.csproj", "{CE85C118-0988-445F-BDCB-04DC3414A355}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{89E73350-3C10-499C-B774-26B15F2F60C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89E73350-3C10-499C-B774-26B15F2F60C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89E73350-3C10-499C-B774-26B15F2F60C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE85C118-0988-445F-BDCB-04DC3414A355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE85C118-0988-445F-BDCB-04DC3414A355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE85C118-0988-445F-BDCB-04DC3414A355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE85C118-0988-445F-BDCB-04DC3414A355}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
