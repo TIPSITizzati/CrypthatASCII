@@ -23,7 +23,7 @@ namespace Crypthat_Common
         #region Connessione
 
         //RS-232
-        public SerialPort SerialPort { get; set; } //Variabile utilizzata dal server per definire la porta di comunicazione con quella persona (Può essere NULL)
+        public SerialPort serialPort { get; set; } //Variabile utilizzata dal server per definire la porta di comunicazione con quella persona (Può essere NULL)
 
         //Sockets
         public IPEndPoint Address { get; set; } //Variabile utilizzata dai socket per identificare la persona (può essere NULL)
@@ -36,6 +36,25 @@ namespace Crypthat_Common
         {
             this.Name = Name;
             this.SessionKey = SessionKey;
+        }
+
+
+
+        //Metodi Utili
+        public static Identity TrovaPerNome(List<Identity> Destinatari, string Nome)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.Name == Nome)
+                    return i;
+            return null;
+        }
+
+        public static Identity TrovaPerSessionKey(List<Identity> Destinatari, string SessionKey)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.SessionKey == SessionKey)
+                    return i;
+            return null;
         }
     }
 }
