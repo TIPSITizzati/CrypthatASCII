@@ -8,5 +8,11 @@ namespace Crypthat_Common
 {
     public class GestoreLogico
     {
+
+        public void InviaMessaggio(string Messaggio, string Destinatario)
+        {
+
+        }
+
     }
 }
