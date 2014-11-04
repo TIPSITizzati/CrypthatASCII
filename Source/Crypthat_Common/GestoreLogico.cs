@@ -32,5 +32,24 @@ namespace Crypthat_Common
         {
 
         }
+
+        #region MetodiIdentity
+        public Identity TrovaPerNome(string Nome)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.Name == Nome)
+                    return i;
+            return null;
+        }
+
+        public Identity TrovaPerSessionKey(string SessionKey)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.SessionKey == SessionKey)
+                    return i;
+            return null;
+        }
+        #endregion
+
     }
 }
