@@ -25,11 +25,14 @@ namespace Crypthat_Common
             this.Destinatari = new List<Identity>(10);
         }
 
-        public void InviaMessaggio(string Messaggio, Identity Destinatario)
+        // Invia i messaggi al livello sottostante in base ad opMode
+        // I dati vengono criptati di default
+        public void InviaMessaggio(string Messaggio, Identity Destinatario, bool Encrypted = true)
         {
 
         }
 
+        // Riceve i dati dallo strato inferiore (Indipendentemente dal tipo RS232 o Sockets)
         public void RiceviMessaggio(string Dati)
         {
 
@@ -48,7 +51,7 @@ namespace Crypthat_Common
             string Header = msg.Split(':')[0];
             string Message = msg.Remove(0, msg.IndexOf(':'));
 
-            //Switch per i vari header
+            // Switch per i vari header
             switch (Header)
             {
                 case "MSG":
