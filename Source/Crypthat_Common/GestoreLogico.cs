@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Crypthat_Common.Connessioni;
+
 namespace Crypthat_Common
 {
     public class GestoreLogico
