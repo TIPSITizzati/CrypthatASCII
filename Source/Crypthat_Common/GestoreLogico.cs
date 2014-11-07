@@ -35,6 +35,33 @@ namespace Crypthat_Common
 
         }
 
+        /*
+         * Ogni Messaggio è compsto nella seguente maniera =>  {HEADER}:Messaggio
+         * I tipi di HEADER sono:
+         *  "MSG"   - Indica che l'header è seguito da un messaggio in chiaro
+         *  "CRYPT" - Indica che l'header è seguito da una struttura dati criptata
+         *  "KEY"   - Indica che l'header è seguito da una chiave
+         *  "HALOHA"- Indica che l'header è seguito dai dati di un utente
+         */
+        private void InterpretaMessaggio(string msg)
+        {
+            string Header = msg.Split(':')[0];
+            string Message = msg.Remove(0, msg.IndexOf(':'));
+
+            //Switch per i vari header
+            switch (Header)
+            {
+                case "MSG":
+                    break;
+                case "CRYPT":
+                    break;
+                case "KEY":
+                    break;
+                case "HALOHA":
+                    break;
+            }
+        }
+
         #region MetodiIdentity
         public Identity TrovaPerNome(string Nome)
         {
