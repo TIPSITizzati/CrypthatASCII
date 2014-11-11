@@ -10,6 +10,14 @@ namespace Crypthat_Common.Connessioni
 {
     public class Rs232Manager
     {
+        //Riferimento al gestore logico attivo
+        private GestoreLogico GestoreLogico;
+
+
+        public Rs232Manager(GestoreLogico GestoreLogico)
+        {
+            this.GestoreLogico = GestoreLogico;
+        }
 
         public void InviaMessaggio(string Messaggio, Identity Destinatario)
         {
@@ -23,9 +31,19 @@ namespace Crypthat_Common.Connessioni
 
         void RiceviMessaggio(object sender, SerialDataReceivedEventArgs e)
         {
-            SerialPort mittente = (SerialPort)sender;
+            //Porta seriale di provenienza
+            SerialPort porta = (SerialPort)sender;
 
+            string Dati = porta.ReadExisting();
+            porta.DiscardInBuffer();
 
+            GestoreLogico.RiceviMessaggio(Dati);
+        }
+
+        public void InizializzaPorta(Identity destinatario, string PortName)
+        {
+            destinatario.serialPort = new SerialPort(PortName);
+            destinatario.serialPort.DataReceived += RiceviMessaggio;
         }
     }
 }

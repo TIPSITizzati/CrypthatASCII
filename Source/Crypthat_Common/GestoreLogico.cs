@@ -11,7 +11,12 @@ namespace Crypthat_Common
     public class GestoreLogico
     {
         public List<Identity> Destinatari { get; set; } //Lista dei destinatari memorizzati
-        private ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
+        protected ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
+        protected Rs232Manager Rs232Manager; //In caso sia in modalità Rs232
+
+        // Delegate per L'evento
+        public delegate void MessaggioRicevuto(Identity Mittente,  string Messaggio);
+        public event MessaggioRicevuto OnMessaggioRicevuto;
 
         public enum ModalitaOperativa
         {
@@ -66,16 +71,26 @@ namespace Crypthat_Common
          *  "KEY"   - Indica che l'header è seguito da una chiave
          *  "HALOHA"- Indica che l'header è seguito dai dati di un utente
          */
-        private void InterpretaTipoMessaggio(string msg)
+        protected void InterpretaTipoMessaggio(string msg)
         {
             string Header = msg.Split(':')[0];
-            string Message = msg.Remove(0, msg.IndexOf(':'));
+            string Data = msg.Remove(0, msg.IndexOf(':'));
 
             // Switch per i vari header
             switch (Header)
             {
                 case "MSG":
-                    break;
+                    string SessionKey = Data.Split(';')[0];
+                    string Messaggio = Data.Remove(0, Data.IndexOf(';'));
+
+                    Identity Mittente = TrovaPerSessionKey(SessionKey);
+
+                    //Richiama l'evento per lo strato superiore
+                    if (OnMessaggioRicevuto != null)
+                        OnMessaggioRicevuto(Mittente, Messaggio);
+                    else
+                        throw new Exception("Evento di ricezione messaggio non impostato!");
+                break;
                 case "CRYPT":
                     break;
                 case "KEY":
@@ -98,6 +113,14 @@ namespace Crypthat_Common
         {
             foreach (Identity i in Destinatari)
                 if (i.SessionKey == SessionKey)
+                    return i;
+            return null;
+        }
+
+        public Identity TrovaPerCOMPort(string NomePorta)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.serialPort.PortName == NomePorta)
                     return i;
             return null;
         }
