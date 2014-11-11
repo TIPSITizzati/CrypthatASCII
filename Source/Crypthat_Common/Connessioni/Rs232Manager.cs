@@ -10,6 +10,7 @@ namespace Crypthat_Common.Connessioni
 {
     public class Rs232Manager
     {
+        //TODO: Aggiungere evento come nel gestore logico (molto meglio)
         //Riferimento al gestore logico attivo
         private GestoreLogico GestoreLogico;
 
@@ -37,7 +38,7 @@ namespace Crypthat_Common.Connessioni
             string Dati = porta.ReadExisting();
             porta.DiscardInBuffer();
 
-            GestoreLogico.RiceviMessaggio(Dati);
+            GestoreLogico.RiceviMessaggio(Dati, sender);
         }
 
         public void InizializzaPorta(Identity destinatario, string PortName)

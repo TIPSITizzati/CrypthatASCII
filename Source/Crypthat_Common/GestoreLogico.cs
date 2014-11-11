@@ -14,10 +14,6 @@ namespace Crypthat_Common
         protected ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
         protected Rs232Manager Rs232Manager; //In caso sia in modalità Rs232
 
-        // Delegate per L'evento
-        public delegate void MessaggioRicevuto(Identity Mittente,  string Messaggio);
-        public event MessaggioRicevuto OnMessaggioRicevuto;
-
         public enum ModalitaOperativa
         {
             Rs232,
@@ -58,9 +54,9 @@ namespace Crypthat_Common
         }
 
         // Riceve i dati dallo strato inferiore (Indipendentemente dal tipo RS232 o Sockets)
-        public void RiceviMessaggio(string Dati)
+        public void RiceviMessaggio(string Dati, object Source)
         {
-            InterpretaTipoMessaggio(Dati);
+            InterpretaTipoMessaggio(Dati, Source);
         }
 
         /*
@@ -71,7 +67,7 @@ namespace Crypthat_Common
          *  "KEY"   - Indica che l'header è seguito da una chiave
          *  "HALOHA"- Indica che l'header è seguito dai dati di un utente
          */
-        protected void InterpretaTipoMessaggio(string msg)
+        protected void InterpretaTipoMessaggio(string msg, object Source)
         {
             string Header = msg.Split(':')[0];
             string Data = msg.Remove(0, msg.IndexOf(':'));
@@ -85,20 +81,21 @@ namespace Crypthat_Common
 
                     Identity Mittente = TrovaPerSessionKey(SessionKey);
 
-                    //Richiama l'evento per lo strato superiore
-                    if (OnMessaggioRicevuto != null)
-                        OnMessaggioRicevuto(Mittente, Messaggio);
-                    else
-                        throw new Exception("Evento di ricezione messaggio non impostato!");
+                    ElaboraMessaggio(Mittente, Messaggio);
                 break;
                 case "CRYPT":
                     break;
                 case "KEY":
                     break;
                 case "HALOHA":
-                    break;
+                    RegistraUtente(Data, Source);
+                break;
             }
         }
+
+        //Metodi per client e server
+        protected abstract void ElaboraMessaggio(Identity Mittente, string Messaggio);
+        protected abstract void RegistraUtente(string Dati, object Source);
 
         #region MetodiIdentity
         public Identity TrovaPerNome(string Nome)
