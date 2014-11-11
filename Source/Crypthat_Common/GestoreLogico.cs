@@ -35,7 +35,7 @@ namespace Crypthat_Common
         // Riceve i dati dallo strato inferiore (Indipendentemente dal tipo RS232 o Sockets)
         public void RiceviMessaggio(string Dati)
         {
-
+            InterpretaTipoMessaggio(Dati);
         }
 
         /*
@@ -46,7 +46,7 @@ namespace Crypthat_Common
          *  "KEY"   - Indica che l'header è seguito da una chiave
          *  "HALOHA"- Indica che l'header è seguito dai dati di un utente
          */
-        private void InterpretaMessaggio(string msg)
+        private void InterpretaTipoMessaggio(string msg)
         {
             string Header = msg.Split(':')[0];
             string Message = msg.Remove(0, msg.IndexOf(':'));
