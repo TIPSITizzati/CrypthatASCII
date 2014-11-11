@@ -23,13 +23,33 @@ namespace Crypthat_Common
         {
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
+            Inizializza();
         }
+
+        public GestoreLogico(ModalitaOperativa opMode, string NomePorta)
+        {
+            this.opMode = opMode;
+            this.Destinatari = new List<Identity>(10);
+            Inizializza(NomePorta);
+        }
+
+        //Metodo che differenzia le inizializzazioni tra client e server
+        public abstract void Inizializza();
+        public abstract void Inizializza(string NomePorta);
 
         // Invia i messaggi al livello sottostante in base ad opMode
         // I dati vengono criptati di default
         public void InviaMessaggio(string Messaggio, Identity Destinatario, bool Encrypted = true)
         {
+            switch (opMode)
+            {
+                case ModalitaOperativa.Rs232:
 
+                    break;
+                case ModalitaOperativa.Sockets:
+
+                    break;
+            }
         }
 
         // Riceve i dati dallo strato inferiore (Indipendentemente dal tipo RS232 o Sockets)
