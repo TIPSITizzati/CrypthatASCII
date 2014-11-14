@@ -41,10 +41,25 @@ namespace Crypthat_Common.Connessioni
 
         public void InizializzaPorta(Identity destinatario, string PortName)
         {
-            Debug.Log("Inizializzata porta " + PortName + "!");
             destinatario.serialPort = new SerialPort(PortName);
             destinatario.serialPort.DataBits = 8;
             destinatario.serialPort.DataReceived += RiceviMessaggio;
+
+            //Controllo per i client (in cui la porta di destinazione è sempre quella del server)
+            if (SerialPort.GetPortNames().Contains(PortName))
+            {
+                try
+                {
+                    destinatario.serialPort.Open();
+                    Debug.Log("Inizializzata porta " + PortName + "!");
+                }
+                catch
+                {
+                    Debug.Log(PortName + " doesn't exist or it's already open, skipping port!", Debug.LogType.ERROR);
+                }
+            }
+            else
+                Debug.Log(PortName + " doesn't exist or it's already open, skipping port!", Debug.LogType.ERROR);
         }
     }
 }

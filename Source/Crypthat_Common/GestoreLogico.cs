@@ -24,17 +24,6 @@ namespace Crypthat_Common
             this.Me = new Identity(null, null);
 
             Debug.Log("Inizializzazione GestoreLogico...");
-            Inizializza();
-        }
-
-        public GestoreLogico(ModalitaOperativa opMode, string NomePorta)
-        {
-            this.opMode = opMode;
-            this.Destinatari = new List<Identity>(10);
-            this.Me = new Identity(null, null);
-
-            Debug.Log("Inizializzazione GestoreLogico...");
-            Inizializza(NomePorta);
         }
 
         //Metodo di inizializzazione globale (sia per client che per server)

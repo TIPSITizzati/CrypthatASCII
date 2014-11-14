@@ -17,14 +17,17 @@ namespace Crypthat_Client
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
 
-        public GestoreLogicoClient(ModalitaOperativa opMode) : base(opMode) { }
+        public GestoreLogicoClient(ModalitaOperativa opMode, string NomePorta) : base(opMode) 
+        {
+            Inizializza(NomePorta);
+        }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
         protected override void RegistraUtente(string Dati, object Source)
         {
             string[] Data = Dati.Split(';');
-            string SessionKey = Data[0];
-            string Name = Data[1];
+            string Name = Data[0];
+            string SessionKey = Data[1];
 
             switch (opMode)
             {

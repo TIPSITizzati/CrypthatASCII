@@ -18,6 +18,8 @@ namespace Crypthat_Server
             Me.Name = "Server";
             Me.SessionKey = GeneraSessionKey();
             Debug.Log("Generated server key = " + Me.SessionKey, Debug.LogType.WARNING);
+
+            Inizializza();
         }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
@@ -25,8 +27,8 @@ namespace Crypthat_Server
         {
             Debug.Log("Inizializzazione registrazione utente...");
             string[] Data = Dati.Split(';');
-            string SessionKey = Data[0];
-            string Name = Data[1];
+            string Name = Data[0];
+            string SessionKey = Data[1];
 
             switch (opMode)
             {
@@ -42,13 +44,19 @@ namespace Crypthat_Server
                     // Messaggi di debug
                     Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", Name, SessionKey), Debug.LogType.INFO);
 
+                    //Invia la key all'utente che cerca di registrarsi
+                    InviaMessaggio("KEY:" + temp.SessionKey, temp);
+
                     // Comunica a tutti gli altri host dell'avvenuta connessione
                     // E' utilizzata una query linq per risparmiare alcune linee di codice
                     foreach (Identity dest in Destinatari.Where(id => id != temp))
+                    {
+                        //Notifica I destinatari già registrati
                         InviaMessaggio("HALOHA:" + Data, dest);
 
-                    //Invia la key all'utente che cerca di registrarsi
-                    InviaMessaggio("KEY:" + temp.SessionKey, temp);
+                        //Notifica l'utente registrato degli altri utenti presenti
+                        InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, temp);
+                    }
                 break;
             }
         }
