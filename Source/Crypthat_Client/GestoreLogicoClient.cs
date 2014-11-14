@@ -17,8 +17,10 @@ namespace Crypthat_Client
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
 
-        public GestoreLogicoClient(ModalitaOperativa opMode, string NomePorta) : base(opMode) 
+        public GestoreLogicoClient(ModalitaOperativa opMode, Identity Me, string NomePorta) : base(opMode) 
         {
+            this.Me = Me;
+
             Inizializza(NomePorta);
 
             //Autenticazione con il server

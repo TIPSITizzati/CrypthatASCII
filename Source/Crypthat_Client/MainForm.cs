@@ -14,7 +14,8 @@ namespace Crypthat_Client
     public partial class MainForm : Form
     {
         int chiave=0;
-        Identity i; 
+        GestoreLogicoClient clientManager;
+
         public MainForm()
         {
             InitializeComponent();
@@ -22,19 +23,26 @@ namespace Crypthat_Client
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            i = new Identity(i.Name, i.SessionKey);
 
-            txtDisplay.Text = i.ToString();
         }
 
-        private int CreaChiave(int chiave)
+        private void button4_Click(object sender, EventArgs e)
         {
-            Random rnd = new Random();
-            chiave += rnd.Next(1, 1000);
+            clientManager = new GestoreLogicoClient(ModalitaOperativa.Rs232, new Identity("Mr. Artum", null), "COM1");
+            clientManager.OnMessaggioRicevuto += clientManager_OnMessaggioRicevuto;
+        }
 
-            chiave.ToString();
+        void clientManager_OnMessaggioRicevuto(object sender, InterLevelArgs args)
+        {
+            txtDisplay.Text += args.Subject.Name + ") " + args.Data + "\n\r";
+        }
 
-            return chiave;
+        private void btn_Click(object sender, EventArgs e)
+        {
+            if(clientManager != null)
+            {
+                clientManager.InviaMessaggio(txtScrivi.Text, clientManager.Destinatari[0]);
+            }
         }
 
         
