@@ -13,18 +13,12 @@ namespace Crypthat_Server
 {
     class GestoreLogicoServer : GestoreLogico
     {
-
-        public List<Identity> Ignoti { get; set; } //Lista degli host ignoti
-
-
-        public GestoreLogicoServer(ModalitaOperativa opMode) : base(opMode) 
-        {
-            this.Ignoti = new List<Identity>();
-        }
+        public GestoreLogicoServer(ModalitaOperativa opMode) : base(opMode) { }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
         protected override void RegistraUtente(string Dati, object Source)
         {
+            Debug.Log("Inizializzazione registrazione utente...", Debug.LogType.INFO);
             string[] Data = Dati.Split(';');
             string SessionKey = Data[0];
             string Name = Data[1];
@@ -34,22 +28,19 @@ namespace Crypthat_Server
                 case ModalitaOperativa.Rs232:
                     SerialPort port = (SerialPort)Source;
 
-                    //Lista di host da sincronizzare
-                    Identity temp = TrovaIgnotoPerCOM(port.PortName);
+                    // Lista di host da sincronizzare
+                    Identity temp = TrovaPerCOMPort(port.PortName);
 
                     temp.SessionKey = SessionKey;
                     temp.Name = Name;
 
-                    //Rimuove l'utente dalla lista ignoti
-                    Ignoti.Remove(temp);
+                    // Messaggi di debug
+                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", Name, SessionKey), Debug.LogType.INFO);
 
-                    //Comunica a tutti gli altri host dell'avvenuta connessione
-                    foreach (Identity dest in Destinatari)
+                    // Comunica a tutti gli altri host dell'avvenuta connessione
+                    // E' utilizzata una query linq per risparmiare alcune linee di codice
+                    foreach (Identity dest in Destinatari.Where(id => id != temp))
                         InviaMessaggio("HALOHA:" + Data, dest);
-
-                    //Aggiunge l'utente alla propria lista di destinatari
-                    Destinatari.Add(temp);
-
                 break;
             }
         }
@@ -64,15 +55,6 @@ namespace Crypthat_Server
                     Rs232Manager.InviaMessaggio(Messaggio, Mittente);
                 break;
             }
-        }
-
-
-        public Identity TrovaIgnotoPerCOM(string COMName)
-        {
-            foreach (Identity Ignoto in Ignoti)
-                if (Ignoto.serialPort.PortName == COMName)
-                    return Ignoto;
-            return null;
         }
     }
 }

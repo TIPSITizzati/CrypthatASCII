@@ -21,6 +21,8 @@ namespace Crypthat_Common
         {
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
+
+            Debug.Log("Inizializzazione GestoreLogico...");
             Inizializza();
         }
 
@@ -28,6 +30,8 @@ namespace Crypthat_Common
         {
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
+
+            Debug.Log("Inizializzazione GestoreLogico...");
             Inizializza(NomePorta);
         }
 
@@ -37,8 +41,6 @@ namespace Crypthat_Common
             switch (opMode)
             {
                 case ModalitaOperativa.Rs232:
-                    Rs232Manager = new Rs232Manager();
-
                     //Inizializza tutte lo porte
                     foreach (string Name in SerialPort.GetPortNames())
                         Inizializza(Name);
@@ -48,6 +50,13 @@ namespace Crypthat_Common
 
         public void Inizializza(string NomePorta)
         {
+            if (Rs232Manager == null)
+            {
+                Debug.Log("Inizializzazione manager RS232...");
+                Rs232Manager = new Rs232Manager();
+                Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;
+            }
+
             Identity Ignoto = new Identity(null, null);
             Rs232Manager.InizializzaPorta(Ignoto, NomePorta);
 
@@ -69,13 +78,6 @@ namespace Crypthat_Common
                     break;
             }
         }
-
-        // Riceve i dati dallo strato inferiore (Indipendentemente dal tipo RS232 o Sockets)
-        public void RiceviMessaggio(string Dati, object Source)
-        {
-            InterpretaTipoMessaggio(Dati, Source);
-        }
-
         /*
          * Ogni Messaggio è compsto nella seguente maniera =>  {HEADER}:Messaggio
          * I tipi di HEADER sono:
@@ -84,8 +86,9 @@ namespace Crypthat_Common
          *  "KEY"   - Indica che l'header è seguito da una chiave
          *  "HALOHA"- Indica che l'header è seguito dai dati di un utente
          */
-        protected void InterpretaTipoMessaggio(string msg, object Source)
+        protected void InterpretaTipoMessaggio(object sender, InterLevelArgs args)
         {
+            string msg = args.Data.ToString();
             string Header = msg.Split(':')[0];
             string Data = msg.Remove(0, msg.IndexOf(':'));
 
@@ -105,14 +108,14 @@ namespace Crypthat_Common
                 case "KEY":
                     break;
                 case "HALOHA":
-                    RegistraUtente(Data, Source);
+                    RegistraUtente(Data, args.Subject.serialPort);
                 break;
             }
         }
 
         //Metodi per client e server
-        protected abstract void ElaboraMessaggio(Identity Mittente, string Messaggio);
-        protected abstract void RegistraUtente(string Dati, object Source);
+        protected virtual void ElaboraMessaggio(Identity Mittente, string Messaggio) { }
+        protected virtual void RegistraUtente(string Dati, object Source) { }
 
         #region MetodiIdentity
         public Identity TrovaPerNome(string Nome)

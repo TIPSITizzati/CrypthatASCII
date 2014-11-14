@@ -10,6 +10,11 @@ namespace Crypthat_Server
     {
         static void Main(string[] args)
         {
+            GestoreLogicoServer gestLogico = new GestoreLogicoServer(Crypthat_Common.ModalitaOperativa.Rs232);
+            while (true)
+            {
+
+            }
         }
     }
 }

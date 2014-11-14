@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Connessioni\Rs232Manager.cs" />
     <Compile Include="DataStructures.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="GestoreLogico.cs" />
     <Compile Include="Identity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
