@@ -13,12 +13,17 @@ namespace Crypthat_Server
 {
     class GestoreLogicoServer : GestoreLogico
     {
-        public GestoreLogicoServer(ModalitaOperativa opMode) : base(opMode) { }
+        public GestoreLogicoServer(ModalitaOperativa opMode) : base(opMode) 
+        {
+            Me.Name = "Server";
+            Me.SessionKey = GeneraSessionKey();
+            Debug.Log("Generated server key = " + Me.SessionKey, Debug.LogType.WARNING);
+        }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
         protected override void RegistraUtente(string Dati, object Source)
         {
-            Debug.Log("Inizializzazione registrazione utente...", Debug.LogType.INFO);
+            Debug.Log("Inizializzazione registrazione utente...");
             string[] Data = Dati.Split(';');
             string SessionKey = Data[0];
             string Name = Data[1];
@@ -31,7 +36,7 @@ namespace Crypthat_Server
                     // Lista di host da sincronizzare
                     Identity temp = TrovaPerCOMPort(port.PortName);
 
-                    temp.SessionKey = SessionKey;
+                    temp.SessionKey = GeneraSessionKey();
                     temp.Name = Name;
 
                     // Messaggi di debug
@@ -41,6 +46,9 @@ namespace Crypthat_Server
                     // E' utilizzata una query linq per risparmiare alcune linee di codice
                     foreach (Identity dest in Destinatari.Where(id => id != temp))
                         InviaMessaggio("HALOHA:" + Data, dest);
+
+                    //Invia la key all'utente che cerca di registrarsi
+                    InviaMessaggio("KEY:" + temp.SessionKey, temp);
                 break;
             }
         }
@@ -55,6 +63,26 @@ namespace Crypthat_Server
                     Rs232Manager.InviaMessaggio(Messaggio, Mittente);
                 break;
             }
+        }
+
+        //Metodo per generare una stringa alfanumerica valida
+        private string GeneraSessionKey()
+        {
+            string Key; //Chiave finale
+            Random rnd = new Random();
+
+            //Fino a quando non trova una chiave non utilizzata
+            do
+            {
+                Key = "";
+                int KeyLenght = rnd.Next(64, 128);
+
+                for (int i = 0; i < KeyLenght; i++)
+                    Key += (char)rnd.Next(33, 126);
+
+            } while (TrovaPerSessionKey(Key) != null);
+
+            return Key;
         }
     }
 }

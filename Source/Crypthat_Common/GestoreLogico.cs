@@ -21,6 +21,7 @@ namespace Crypthat_Common
         {
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
+            this.Me = new Identity(null, null);
 
             Debug.Log("Inizializzazione GestoreLogico...");
             Inizializza();
@@ -30,6 +31,7 @@ namespace Crypthat_Common
         {
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
+            this.Me = new Identity(null, null);
 
             Debug.Log("Inizializzazione GestoreLogico...");
             Inizializza(NomePorta);
@@ -106,6 +108,9 @@ namespace Crypthat_Common
                 case "CRYPT":
                     break;
                 case "KEY":
+                    Debug.Log("Recived SessionKey = " + Data);
+                    if(Me.SessionKey == null)
+                        Me.SessionKey = Data;
                     break;
                 case "HALOHA":
                     RegistraUtente(Data, args.Subject.serialPort);

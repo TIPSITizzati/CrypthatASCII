@@ -43,6 +43,7 @@ namespace Crypthat_Common.Connessioni
         {
             Debug.Log("Inizializzata porta " + PortName + "!");
             destinatario.serialPort = new SerialPort(PortName);
+            destinatario.serialPort.DataBits = 8;
             destinatario.serialPort.DataReceived += RiceviMessaggio;
         }
     }
