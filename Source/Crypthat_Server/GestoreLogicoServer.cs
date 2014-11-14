@@ -47,6 +47,9 @@ namespace Crypthat_Server
                     //Invia la key all'utente che cerca di registrarsi
                     InviaMessaggio("KEY:" + temp.SessionKey, temp);
 
+                    //Aggiorna i dati relativi al server del client
+                    InviaMessaggio("HALOHA:" + Me.SessionKey + ":" + Me.Name, temp);
+
                     // Comunica a tutti gli altri host dell'avvenuta connessione
                     // E' utilizzata una query linq per risparmiare alcune linee di codice
                     foreach (Identity dest in Destinatari.Where(id => id != temp))
