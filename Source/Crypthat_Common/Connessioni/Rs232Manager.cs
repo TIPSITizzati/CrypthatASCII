@@ -10,20 +10,14 @@ namespace Crypthat_Common.Connessioni
 {
     public class Rs232Manager
     {
-        //TODO: Aggiungere evento come nel gestore logico (molto meglio)
-        //Riferimento al gestore logico attivo
-        private GestoreLogico GestoreLogico;
+        //Evento per la ricezione di un messaggio
+        public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
+        public event MessaggioRicevuto OnMessaggioRicevuto;
 
-
-        public Rs232Manager(GestoreLogico GestoreLogico)
-        {
-            this.GestoreLogico = GestoreLogico;
-        }
-
-        public void InviaMessaggio(string Messaggio, Identity Destinatario)
+        public void InviaMessaggio(string Dati, Identity Destinatario)
         {
             if (Destinatario.serialPort != null)
-                Destinatario.serialPort.Write(Messaggio);
+                Destinatario.serialPort.Write(Dati);
             else
                 throw new Exception("Porta non inizializzata");
 
@@ -38,7 +32,11 @@ namespace Crypthat_Common.Connessioni
             string Dati = porta.ReadExisting();
             porta.DiscardInBuffer();
 
-            GestoreLogico.RiceviMessaggio(Dati, sender);
+            //Richiama l'evento
+            if (OnMessaggioRicevuto != null)
+                OnMessaggioRicevuto(this, new InterLevelArgs(null, Dati));
+            else
+                throw new Exception("Evento di ricezione messaggio non impostato!");
         }
 
         public void InizializzaPorta(Identity destinatario, string PortName)

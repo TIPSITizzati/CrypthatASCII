@@ -22,26 +22,6 @@ namespace Crypthat_Server
             this.Ignoti = new List<Identity>();
         }
 
-        //Inizializza il server su tutte le porte
-        public override void Inizializza()
-        {
-            switch(opMode)
-            {
-                case ModalitaOperativa.Rs232:
-                    Rs232Manager = new Rs232Manager(this); 
-
-                    //Inizializza tutte lo porte
-                    foreach (string Name in SerialPort.GetPortNames())
-                    {
-                        Identity Ignoto = new Identity(null, null);
-                        Rs232Manager.InizializzaPorta(Ignoto, Name);
-
-                        Ignoti.Add(Ignoto);
-                    }
-                break;
-            }
-        }
-
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
         protected override void RegistraUtente(string Dati, object Source)
         {

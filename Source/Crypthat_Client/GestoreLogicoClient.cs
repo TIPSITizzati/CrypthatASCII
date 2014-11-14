@@ -13,7 +13,7 @@ namespace Crypthat_Client
     {
 
         // Delegate per L'evento grafico
-        public delegate void MessaggioRicevuto(Identity Mittente, string Messaggio);
+        public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
 
@@ -41,7 +41,7 @@ namespace Crypthat_Client
         {
             //Richiama l'evento per lo strato superiore
             if (OnMessaggioRicevuto != null)
-                OnMessaggioRicevuto(Mittente, Messaggio);
+                OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
             else
                 throw new Exception("Evento di ricezione messaggio non impostato!");
         }

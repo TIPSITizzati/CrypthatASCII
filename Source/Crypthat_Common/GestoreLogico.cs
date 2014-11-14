@@ -3,22 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Ports;
 
+using Crypthat_Common;
 using Crypthat_Common.Connessioni;
 
 namespace Crypthat_Common
 {
     public class GestoreLogico
     {
+        public Identity Me; //Riferimento a se stesso
         public List<Identity> Destinatari { get; set; } //Lista dei destinatari memorizzati
         protected ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
         protected Rs232Manager Rs232Manager; //In caso sia in modalità Rs232
-
-        public enum ModalitaOperativa
-        {
-            Rs232,
-            Sockets
-        }
 
         public GestoreLogico(ModalitaOperativa opMode)
         {
@@ -34,9 +31,28 @@ namespace Crypthat_Common
             Inizializza(NomePorta);
         }
 
-        //Metodo che differenzia le inizializzazioni tra client e server
-        public abstract void Inizializza();
-        public abstract void Inizializza(string NomePorta);
+        //Metodo di inizializzazione globale (sia per client che per server)
+        public void Inizializza()
+        {
+            switch (opMode)
+            {
+                case ModalitaOperativa.Rs232:
+                    Rs232Manager = new Rs232Manager();
+
+                    //Inizializza tutte lo porte
+                    foreach (string Name in SerialPort.GetPortNames())
+                        Inizializza(Name);
+                break;
+            }
+        }
+
+        public void Inizializza(string NomePorta)
+        {
+            Identity Ignoto = new Identity(null, null);
+            Rs232Manager.InizializzaPorta(Ignoto, NomePorta);
+
+            Destinatari.Add(Ignoto);
+        }
 
         // Invia i messaggi al livello sottostante in base ad opMode
         // I dati vengono criptati di default
@@ -45,8 +61,9 @@ namespace Crypthat_Common
             switch (opMode)
             {
                 case ModalitaOperativa.Rs232:
-
-                    break;
+                    //TODO: Aggiungere crittografia
+                    Rs232Manager.InviaMessaggio(String.Format("MSG:{0};{1}", Me.SessionKey, Messaggio), Destinatario);
+                break;
                 case ModalitaOperativa.Sockets:
 
                     break;
