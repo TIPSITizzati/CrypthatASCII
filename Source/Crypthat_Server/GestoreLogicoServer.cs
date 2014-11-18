@@ -42,23 +42,23 @@ namespace Crypthat_Server
                     temp.Name = Name;
 
                     // Messaggi di debug
-                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", temp.SessionKey, temp.SessionKey), Debug.LogType.INFO);
+                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", temp.Name, temp.SessionKey), Debug.LogType.INFO);
 
                     //Invia la key all'utente che cerca di registrarsi
-                    InviaMessaggio("KEY:" + temp.SessionKey, temp);
+                    Rs232Manager.InviaMessaggio("KEY:" + temp.SessionKey, temp);
 
                     //Aggiorna i dati relativi al server del client
-                    InviaMessaggio("HALOHA:" + Me.SessionKey + ":" + Me.Name, temp);
+                    Rs232Manager.InviaMessaggio("HALOHA:" + Me.Name + ":" + Me.SessionKey, temp);
 
                     // Comunica a tutti gli altri host dell'avvenuta connessione
                     // E' utilizzata una query linq per risparmiare alcune linee di codice
                     foreach (Identity dest in Destinatari.Where(id => id != temp))
                     {
                         //Notifica I destinatari già registrati
-                        InviaMessaggio("HALOHA:" + Data, dest);
+                        Rs232Manager.InviaMessaggio("HALOHA:" + Data, dest);
 
                         //Notifica l'utente registrato degli altri utenti presenti
-                        InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, temp);
+                        Rs232Manager.InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, temp);
                     }
                 break;
             }

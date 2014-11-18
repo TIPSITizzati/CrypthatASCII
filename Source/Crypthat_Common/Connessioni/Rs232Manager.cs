@@ -17,7 +17,7 @@ namespace Crypthat_Common.Connessioni
         public void InviaMessaggio(string Dati, Identity Destinatario)
         {
             if (Destinatario.serialPort != null)
-                Destinatario.serialPort.Write(Dati);
+                Destinatario.serialPort.Write(Dati + (char)243);
             else
                 throw new Exception("Porta non inizializzata");
 
@@ -30,23 +30,32 @@ namespace Crypthat_Common.Connessioni
             SerialPort porta = (SerialPort)sender;
 
             string Dati = porta.ReadExisting();
-            porta.DiscardInBuffer();
 
-            Identity temp = new Identity(null, null);
-            temp.serialPort = porta;
+            if (Dati.Contains((char)243))
+            {
+                //Rimuove il carattere di escape
+                Dati.Remove(Dati.Length - 1);
 
-            //Richiama l'evento
-            if (OnMessaggioRicevuto != null)
-                OnMessaggioRicevuto(this, new InterLevelArgs(temp, Dati));
-            else
-                throw new Exception("Evento di ricezione messaggio non impostato!");
+                porta.DiscardInBuffer();
+
+                Identity temp = new Identity(null, null);
+                temp.serialPort = porta;
+
+                //Richiama l'evento
+                if (OnMessaggioRicevuto != null)
+                    OnMessaggioRicevuto(this, new InterLevelArgs(temp, Dati));
+                else
+                    throw new Exception("Evento di ricezione messaggio non impostato!");
+            }
         }
 
         public void InizializzaPorta(Identity destinatario, string PortName)
         {
             destinatario.serialPort = new SerialPort(PortName);
-            destinatario.serialPort.BaudRate = 2400;
+            destinatario.serialPort.BaudRate = 9600;
             destinatario.serialPort.DataBits = 8;
+            destinatario.serialPort.Parity = Parity.Even;
+            destinatario.serialPort.StopBits = StopBits.One;
             destinatario.serialPort.DataReceived += RiceviMessaggio;
 
             //Controllo per i client (in cui la porta di destinazione è sempre quella del server)

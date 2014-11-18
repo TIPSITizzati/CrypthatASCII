@@ -28,7 +28,7 @@ namespace Crypthat_Client
 
             //Autenticazione con il server
             if (Destinatari.Count > 0)
-                InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, Destinatari[0]);
+                Rs232Manager.InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, Destinatari[0]);
         }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
