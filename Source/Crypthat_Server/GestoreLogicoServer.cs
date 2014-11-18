@@ -42,7 +42,7 @@ namespace Crypthat_Server
                     temp.Name = Name;
 
                     // Messaggi di debug
-                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", Name, SessionKey), Debug.LogType.INFO);
+                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", temp.SessionKey, temp.SessionKey), Debug.LogType.INFO);
 
                     //Invia la key all'utente che cerca di registrarsi
                     InviaMessaggio("KEY:" + temp.SessionKey, temp);

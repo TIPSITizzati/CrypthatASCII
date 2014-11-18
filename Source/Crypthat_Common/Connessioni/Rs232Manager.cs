@@ -32,9 +32,12 @@ namespace Crypthat_Common.Connessioni
             string Dati = porta.ReadExisting();
             porta.DiscardInBuffer();
 
+            Identity temp = new Identity(null, null);
+            temp.serialPort = porta;
+
             //Richiama l'evento
             if (OnMessaggioRicevuto != null)
-                OnMessaggioRicevuto(this, new InterLevelArgs(null, Dati));
+                OnMessaggioRicevuto(this, new InterLevelArgs(temp, Dati));
             else
                 throw new Exception("Evento di ricezione messaggio non impostato!");
         }
@@ -42,6 +45,7 @@ namespace Crypthat_Common.Connessioni
         public void InizializzaPorta(Identity destinatario, string PortName)
         {
             destinatario.serialPort = new SerialPort(PortName);
+            destinatario.serialPort.BaudRate = 2400;
             destinatario.serialPort.DataBits = 8;
             destinatario.serialPort.DataReceived += RiceviMessaggio;
 
