@@ -89,7 +89,13 @@ namespace Crypthat_Server
                 int KeyLenght = rnd.Next(64, 128);
 
                 for (int i = 0; i < KeyLenght; i++)
-                    Key += (char)rnd.Next(33, 126);
+                {
+                    int a = rnd.Next(1000);
+                    if(a < 750)
+                        Key += (char)rnd.Next(60, 126);
+                    else
+                        Key += (char)rnd.Next(48, 58);
+                }
 
             } while (TrovaPerSessionKey(Key) != null);
 
