@@ -17,7 +17,7 @@ namespace Crypthat_Common.Connessioni
         public void InviaMessaggio(string Dati, Identity Destinatario)
         {
             if (Destinatario.serialPort != null)
-                Destinatario.serialPort.Write(Dati + (char)243);
+                Destinatario.serialPort.WriteLine(Dati + (char)126);
             else
                 throw new Exception("Porta non inizializzata");
 
@@ -31,9 +31,9 @@ namespace Crypthat_Common.Connessioni
 
             string Dati = porta.ReadExisting();
 
-            if (Dati.Contains((char)243))
+            if (Dati.Contains((char)126))
             {
-                //Rimuove il carattere di escape
+                //Rimuove carattere di escape
                 Dati.Remove(Dati.Length - 1);
 
                 porta.DiscardInBuffer();
