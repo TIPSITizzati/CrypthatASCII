@@ -12,9 +12,12 @@ namespace Crypthat_Client
     class GestoreLogicoClient : GestoreLogico
     {
 
-        // Delegate per L'evento grafico
-        public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
-        public event MessaggioRicevuto OnMessaggioRicevuto;
+        // Delegate per gli eventi grafici
+        public delegate void EventoRicevuto(object sender, InterLevelArgs args);
+
+        // Eventi
+        public event EventoRicevuto OnMessaggioRicevuto;    // Evento scatenato quando un messaggio viene ricevuto
+        public event EventoRicevuto OnUtenteRegistrato;     // Evento ricevuto quando un utente si è registrato
 
 
         public GestoreLogicoClient(ModalitaOperativa opMode, Identity Me, string NomePorta) : base(opMode) 
@@ -51,6 +54,11 @@ namespace Crypthat_Client
                         Ignoto.Name = Name;
                     }
 
+                    //Richiama l'evento di registrazione di un utente (Per la parte grafica)
+                    if (OnUtenteRegistrato != null)
+                        OnUtenteRegistrato(this, new InterLevelArgs(Ignoto, null));
+                    else
+                        throw new Exception("Evento di registrazione utente non impostato!");
                 break;
             }
         }
@@ -58,7 +66,7 @@ namespace Crypthat_Client
         //Richiama l'evento per l'interfaccia grafica
         protected override void ElaboraMessaggio(Identity Mittente, string Messaggio)
         {
-            //Richiama l'evento per lo strato superiore
+            //Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
             if (OnMessaggioRicevuto != null)
                 OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
             else
