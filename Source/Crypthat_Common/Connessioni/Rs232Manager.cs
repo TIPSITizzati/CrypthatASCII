@@ -34,7 +34,7 @@ namespace Crypthat_Common.Connessioni
             if (Dati.Contains((char)126))
             {
                 //Rimuove carattere di escape
-                Dati.Remove(Dati.Length - 1);
+                Dati = Dati.Remove(Dati.Length - 1);
 
                 porta.DiscardInBuffer();
 
