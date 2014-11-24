@@ -62,7 +62,7 @@ namespace Crypthat_Common
             {
                 case ModalitaOperativa.Rs232:
                     //TODO: Aggiungere crittografia
-                    Rs232Manager.InviaMessaggio(String.Format("MSG:{0};{1}", Me.SessionKey, Messaggio), Destinatario);
+                    Rs232Manager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
                 break;
                 case ModalitaOperativa.Sockets:
 
@@ -87,12 +87,18 @@ namespace Crypthat_Common
             switch (Header)
             {
                 case "MSG":
-                    string SessionKey = Data.Split(';')[0];
+                    string SessionKeys = Data.Split(';')[0];
                     string Messaggio = Data.Remove(0, Data.IndexOf(';'));
 
-                    Identity Mittente = TrovaPerSessionKey(SessionKey);
+                    // Divide le due SessionKeys
+                    string SK_Mittente = Data.Split('?')[0];
+                    string SK_Destinatario = Data.Split('?')[0];
 
-                    ElaboraMessaggio(Mittente, Messaggio);
+                    // Ottiene i dati di mittente e destinatario tramite il metodo TrovaPerSessionKey
+                    Identity Mittente = TrovaPerSessionKey(SK_Mittente);
+                    Identity Destinatario = TrovaPerSessionKey(SK_Destinatario);
+
+                    ElaboraMessaggio(Mittente, Destinatario, Messaggio);
                 break;
                 case "CRYPT":
                     break;
@@ -108,7 +114,7 @@ namespace Crypthat_Common
         }
 
         //Metodi per client e server
-        protected virtual void ElaboraMessaggio(Identity Mittente, string Messaggio) { }
+        protected virtual void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio) { }
         protected virtual void RegistraUtente(string Dati, object Source) { }
 
         #region MetodiIdentity

@@ -10,10 +10,11 @@ namespace Crypthat_Server
     {
         static void Main(string[] args)
         {
+            // In partenza il server inizializza subito un GestoreLogicoServer per mettersi in ascolto per eventuali connessioni
             GestoreLogicoServer gestLogico = new GestoreLogicoServer(Crypthat_Common.ModalitaOperativa.Rs232);
             while (true)
             {
-
+                //Ciclo infinito per mantenere il server in ascolto
             }
         }
     }

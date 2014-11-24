@@ -64,13 +64,19 @@ namespace Crypthat_Client
         }
 
         //Richiama l'evento per l'interfaccia grafica
-        protected override void ElaboraMessaggio(Identity Mittente, string Messaggio)
+        protected override void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio)
         {
-            //Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
-            if (OnMessaggioRicevuto != null)
-                OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
+            //Se il messaggio ricevuto appartiene a questo client
+            if (Destinatario.SessionKey == Me.SessionKey)
+            {
+                //Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
+                if (OnMessaggioRicevuto != null)
+                    OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
+                else
+                    throw new Exception("Evento di ricezione messaggio non impostato!");
+            }
             else
-                throw new Exception("Evento di ricezione messaggio non impostato!");
+                Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.")
         }
     }
 }
