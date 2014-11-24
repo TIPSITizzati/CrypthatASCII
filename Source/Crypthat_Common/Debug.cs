@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Crypthat_Common
 {
+    // Classe per il Debug
     public class Debug
     {
         public enum LogType
@@ -16,6 +17,8 @@ namespace Crypthat_Common
             WARNING = ConsoleColor.DarkYellow
         }
 
+        // Scrive con colori diversi nella console
+        // Utilizza la Reflection per ricavare nome del metodo, tipo di metodo (costruttore o metodo) e classe di appartenenza
         public static void Log(object Message, LogType type = LogType.INFO)
         {
             //Stack delle chiamate

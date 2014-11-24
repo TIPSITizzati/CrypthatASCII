@@ -10,6 +10,9 @@ using Crypthat_Common.Connessioni;
 
 namespace Crypthat_Common
 {
+    /* Livello di astrazione appena sotto l'interfaccia grafica che si occupa di creare un collegamento
+     * logico tra i vari Utenti della rete.
+     */
     public class GestoreLogico
     {
         public Identity Me; //Riferimento a se stesso
@@ -17,6 +20,7 @@ namespace Crypthat_Common
         protected ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
         protected Rs232Manager Rs232Manager; //In caso sia in modalità Rs232
 
+        //Costruttore di default che inizializza il GestoreLogico con un Identità ignota (in attesa di un'Identità dal server)
         public GestoreLogico(ModalitaOperativa opMode)
         {
             this.opMode = opMode;
@@ -26,7 +30,7 @@ namespace Crypthat_Common
             Debug.Log("Inizializzazione GestoreLogico...");
         }
 
-        //Metodo di inizializzazione globale (sia per client che per server)
+        // Metodo che in modalità Rs232 inizializza tutte le porta Rs232 disponibili
         public void Inizializza()
         {
             switch (opMode)
@@ -39,17 +43,19 @@ namespace Crypthat_Common
             }
         }
 
+        // Metodo che inizializza una porta specifica Rs232
         public void Inizializza(string NomePorta)
         {
+            // Se RS232Manager non è inizializzato
             if (Rs232Manager == null)
             {
                 Debug.Log("Inizializzazione manager RS232...");
-                Rs232Manager = new Rs232Manager();
-                Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;
+                Rs232Manager = new Rs232Manager();                              // Inizializza RS232Manager
+                Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
             }
 
-            Identity Ignoto = new Identity(null, null);
-            Rs232Manager.InizializzaPorta(Ignoto, NomePorta);
+            Identity Ignoto = new Identity(null, null); // Non sapendo a chi si è connessi, viene creata un Identità ignota
+            Rs232Manager.InizializzaPorta(Ignoto, NomePorta); // Viene aperta la connessione sulla porta richiesta
 
             Destinatari.Add(Ignoto);
         }
@@ -69,6 +75,7 @@ namespace Crypthat_Common
                     break;
             }
         }
+
         /*
          * Ogni Messaggio è compsto nella seguente maniera =>  {HEADER}:Messaggio
          * I tipi di HEADER sono:
@@ -103,6 +110,7 @@ namespace Crypthat_Common
                 case "CRYPT":
                     break;
                 case "KEY":
+                    // Alla ricezione di questo messaggio (proveniente dal server) l'utente imposta la chiave fornita
                     Debug.Log("Recived SessionKey = " + Data);
                     if(Me.SessionKey == null)
                         Me.SessionKey = Data;
@@ -113,11 +121,13 @@ namespace Crypthat_Common
             }
         }
 
-        //Metodi per client e server
+        //Metodi diversificati per client e server
         protected virtual void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio) { }
         protected virtual void RegistraUtente(string Dati, object Source) { }
 
+        //Metodi di ricerca delle Identity nella lista dei destinatari
         #region MetodiIdentity
+        // Non usare, può dare risultati inconsistenti
         public Identity TrovaPerNome(string Nome)
         {
             foreach (Identity i in Destinatari)
@@ -126,6 +136,7 @@ namespace Crypthat_Common
             return null;
         }
 
+        // Restituisce un Identity grazie alla chiave di identificazione univoca dei vari client
         public Identity TrovaPerSessionKey(string SessionKey)
         {
             foreach (Identity i in Destinatari)
@@ -134,6 +145,7 @@ namespace Crypthat_Common
             return null;
         }
 
+        // Utilizzata su Destinatari di cui non si conoscono ne Nome ne SessionKey
         public Identity TrovaPerCOMPort(string NomePorta)
         {
             foreach (Identity i in Destinatari)

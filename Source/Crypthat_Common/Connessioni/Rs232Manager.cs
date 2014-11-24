@@ -8,20 +8,25 @@ using System.IO.Ports;
 
 namespace Crypthat_Common.Connessioni
 {
+    /* Classe posta al livello di astrazione più basso che si occupa solamente
+     * di inviare e ricevere messaggi sulle porte Rs232 fornendo al GestoreLogico
+     * i messaggi interi.
+     */
+
     public class Rs232Manager
     {
         //Evento per la ricezione di un messaggio
         public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
+        // Metodo standard per l'invio di Dati ad un destinatario
         public void InviaMessaggio(string Dati, Identity Destinatario)
         {
+            // Se la porta del destinatario è inizializzata allora scrive i dati
             if (Destinatario.serialPort != null)
-                Destinatario.serialPort.WriteLine(Dati + (char)126);
+                Destinatario.serialPort.Write(Dati + (char)126);
             else
                 throw new Exception("Porta non inizializzata");
-
-            Destinatario.serialPort.DataReceived += RiceviMessaggio;
         }
 
         void RiceviMessaggio(object sender, SerialDataReceivedEventArgs e)
@@ -56,14 +61,14 @@ namespace Crypthat_Common.Connessioni
             destinatario.serialPort.DataBits = 8;
             destinatario.serialPort.Parity = Parity.Even;
             destinatario.serialPort.StopBits = StopBits.One;
-            destinatario.serialPort.DataReceived += RiceviMessaggio;
 
-            //Controllo per i client (in cui la porta di destinazione è sempre quella del server)
+            // Controlla che la porta non sia già stata aperta
             if (SerialPort.GetPortNames().Contains(PortName))
             {
                 try
                 {
                     destinatario.serialPort.Open();
+                    destinatario.serialPort.DataReceived += RiceviMessaggio;
                     Debug.Log("Inizializzata porta " + PortName + "!");
                 }
                 catch

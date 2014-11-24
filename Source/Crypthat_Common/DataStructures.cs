@@ -16,8 +16,8 @@ namespace Crypthat_Common
     //Oggetto utilizzato per la comunicazione tra strati di astrazione
     public class InterLevelArgs
     {
-        public Identity Subject { get; set; }
-        public object Data { get; set; }
+        public Identity Subject { get; set; }   //Mittente
+        public object Data { get; set; }        //Dati da condividere
 
         public InterLevelArgs(Identity Subject, object Data)
         {

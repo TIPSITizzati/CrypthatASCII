@@ -76,7 +76,7 @@ namespace Crypthat_Client
                     throw new Exception("Evento di ricezione messaggio non impostato!");
             }
             else
-                Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.")
+                Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.");
         }
     }
 }
