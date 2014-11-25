@@ -88,7 +88,7 @@ namespace Crypthat_Common
         {
             string msg = args.Data.ToString();
             string Header = msg.Split(':')[0];
-            string Data = msg.Remove(0, msg.IndexOf(':'));
+            string Data = msg.Substring(msg.IndexOf(':') + 1);
 
             // Switch per i vari header
             switch (Header)

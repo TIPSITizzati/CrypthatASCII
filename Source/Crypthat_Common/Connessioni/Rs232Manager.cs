@@ -24,7 +24,7 @@ namespace Crypthat_Common.Connessioni
         {
             // Se la porta del destinatario è inizializzata allora scrive i dati
             if (Destinatario.serialPort != null)
-                Destinatario.serialPort.Write(Dati + (char)126);
+                Destinatario.serialPort.Write(Dati.Replace((char)126, ' ') + (char)126);
             else
                 throw new Exception("Porta non inizializzata");
         }
@@ -34,15 +34,10 @@ namespace Crypthat_Common.Connessioni
             //Porta seriale di provenienza
             SerialPort porta = (SerialPort)sender;
 
-            string Dati = porta.ReadExisting();
+            string Dati = porta.ReadTo("~"); //Legge fino al carattere di escape
 
-            if (Dati.Contains((char)126))
+            if (Dati.Length > 0)
             {
-                //Rimuove carattere di escape
-                Dati = Dati.Remove(Dati.Length - 1);
-
-                porta.DiscardInBuffer();
-
                 Identity temp = new Identity(null, null);
                 temp.serialPort = porta;
 
