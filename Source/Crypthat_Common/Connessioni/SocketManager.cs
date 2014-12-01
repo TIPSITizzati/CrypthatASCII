@@ -37,12 +37,7 @@ namespace Crypthat_Common.Connessioni
         // Semafori Client
         ManualResetEvent connessioneRiuscita = new ManualResetEvent(false);
 
-        // Metodo standard per l'invio di Dati ad un destinatario
-        public void InviaMessaggio(string Dati, Identity Destinatario)
-        {
-
-        }
-
+        // Metodo di connessione per il client
         public void Connetti(Identity Server, IPEndPoint ipAddress)
         {
             Server.Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
@@ -53,6 +48,7 @@ namespace Crypthat_Common.Connessioni
             connessioneRiuscita.WaitOne();
         }
 
+        // Callback di avvenuta connessione per il client
         private void Connesso(IAsyncResult ar)
         {
             try
@@ -73,5 +69,35 @@ namespace Crypthat_Common.Connessioni
                 Debug.Log(e.ToString(), Debug.LogType.ERROR);
             }
         }
+
+        // Metodo standard per l'invio di Dati ad un destinatario
+        public void InviaMessaggio(string Dati, Identity Destinatario)
+        {
+            // Converte la stringa in formata Unicode
+            byte[] byteData = Encoding.Unicode.GetBytes(Dati + "<eof>");
+
+            // Inizia ad inviare i dati ad il dispositivo connesso
+            Destinatario.Sock.BeginSend(byteData, 0, byteData.Length, SocketFlags.None,
+                new AsyncCallback(Inviato), Destinatario);
+        }
+
+        // Callback per l'avennuto trasferimento dei dati
+        public void Inviato(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.
+                Identity dest = (Identity)ar.AsyncState;
+
+                // Complete sending the data to the remote device.
+                int bytesSent = dest.Sock.EndSend(ar);
+                Debug.Log(String.Format("Sent {0} bytes to server.", bytesSent));
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString(), Debug.LogType.ERROR);
+            }
+        }
+
     }
 }
