@@ -165,7 +165,7 @@ namespace Crypthat_Common.Connessioni
         }
 
         // Metodo per mettere in ascolto il client di possibili richieste
-        private void RiceviMessaggio(Identity dest)
+        public void RiceviMessaggio(Identity dest)
         {
             try
             {
@@ -201,13 +201,11 @@ namespace Crypthat_Common.Connessioni
                     //  e riceve i restanti.
                     from.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                         new AsyncCallback(RicevutoMessaggio), state);
-                }
-                else
-                {
+
                     // Una volta letti tutti i dati, controlla che sia finito il comando e chiama l'evento di ricezione messaggio
                     if (state.str.Length > 1 && state.str.Contains("<eof>"))
                     {
-                        if(OnMessaggioRicevuto != null)
+                        if (OnMessaggioRicevuto != null)
                             OnMessaggioRicevuto(state, new InterLevelArgs(null, state.str.Replace("<eof>", "\n").Replace("<\\", "<")));
                         else
                             throw new Exception("Evento di ricezione messaggio non impostato!");

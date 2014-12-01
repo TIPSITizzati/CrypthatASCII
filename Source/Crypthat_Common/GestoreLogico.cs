@@ -41,6 +41,7 @@ namespace Crypthat_Common
                 case ModalitaOperativa.Sockets:
                     Debug.Log("Inizializzazione manager Sockets...");
                     SocketManager = new SocketManager();
+                    SocketManager.OnMessaggioRicevuto += InterpretaTipoMessaggio;
                 break;
             }
 
