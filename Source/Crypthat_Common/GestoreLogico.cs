@@ -19,8 +19,7 @@ namespace Crypthat_Common
         public Identity Me; // Riferimento a se stesso
         public List<Identity> Destinatari { get; set; } // Lista dei destinatari memorizzati
         protected ModalitaOperativa opMode; // Modalità in cui il programma funzionerà
-        protected Rs232Manager Rs232Manager; // In caso sia in modalità Rs232
-        protected SocketManager SocketManager; // In caso sia in modalità Socket
+        protected ConnectionInterface ConnectionManager; // Gestisce gli eventi comuni di tutte le interfacce di connessione (per ora Rs232 e Sockets)
 
         //Costruttore di default che inizializza il GestoreLogico con un Identità ignota (in attesa di un'Identità dal server)
         public GestoreLogico(ModalitaOperativa opMode)
@@ -34,16 +33,16 @@ namespace Crypthat_Common
                 //Inizializza la parte Rs232
                 case ModalitaOperativa.Rs232:
                     Debug.Log("Inizializzazione manager RS232...");
-                    Rs232Manager = new Rs232Manager();                              // Inizializza RS232Manager
-                    Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
+                    ConnectionManager = new Rs232Manager();                              // Inizializza RS232Manager
                 break;
                 //Inizializza la parte Socket
                 case ModalitaOperativa.Sockets:
                     Debug.Log("Inizializzazione manager Sockets...");
-                    SocketManager = new SocketManager();
-                    SocketManager.OnMessaggioRicevuto += InterpretaTipoMessaggio;
+                    ConnectionManager = new SocketManager();                            // Inizializza il manager dei Socket
                 break;
             }
+
+            ConnectionManager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
 
             Debug.Log("Inizializzazione GestoreLogico...");
         }
@@ -60,7 +59,7 @@ namespace Crypthat_Common
                 break;
 
                 case ModalitaOperativa.Sockets:
-                    SocketManager.Ascolta();
+                    ((SocketManager)ConnectionManager).Ascolta();
                 break;
             }
         }
@@ -69,7 +68,17 @@ namespace Crypthat_Common
         public void Inizializza(string NomePorta)
         {
             Identity Ignoto = new Identity(null, null); // Non sapendo a chi si è connessi, viene creata un Identità ignota
-            Rs232Manager.InizializzaPorta(Ignoto, NomePorta); // Viene aperta la connessione sulla porta richiesta
+            ((Rs232Manager)ConnectionManager).InizializzaPorta(Ignoto, NomePorta); // Viene aperta la connessione sulla porta richiesta
+
+            Destinatari.Add(Ignoto);
+        }
+
+        // Metodo che si collega ad un EndPoint definito
+        public void Inizializza(System.Net.IPEndPoint serverEndpoint)
+        {
+            Identity Ignoto = new Identity(null, null); // Non sapendo a chi si è connessi, viene creata un Identità ignota
+            ((SocketManager)ConnectionManager).Connetti(Ignoto, serverEndpoint); // Viene aperta la connessione all'EndPoint richiesto
+            ((SocketManager)ConnectionManager).RiceviMessaggio(Ignoto); // Inizia ad ascoltare il server
 
             Destinatari.Add(Ignoto);
         }
@@ -78,16 +87,8 @@ namespace Crypthat_Common
         // I dati vengono criptati di default
         public void InviaMessaggio(string Messaggio, Identity Destinatario, bool Encrypted = true)
         {
-            switch (opMode)
-            {
-                case ModalitaOperativa.Rs232:
-                    //TODO: Aggiungere crittografia
-                    Rs232Manager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
-                break;
-                case ModalitaOperativa.Sockets:
-
-                    break;
-            }
+            //TODO: Aggiungere crittografia
+            ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
         }
 
         /*
@@ -109,17 +110,21 @@ namespace Crypthat_Common
             {
                 case "MSG":
                     string SessionKeys = Data.Split(';')[0];
-                    string Messaggio = Data.Remove(0, Data.IndexOf(';'));
+                    string Messaggio = Data.Remove(0, Data.IndexOf(';') + 1);
 
                     // Divide le due SessionKeys
-                    string SK_Mittente = Data.Split('?')[0];
-                    string SK_Destinatario = Data.Split('?')[0];
+                    string SK_Mittente = SessionKeys.Split('?')[0];
+                    string SK_Destinatario = SessionKeys.Split('?')[1];
 
                     // Ottiene i dati di mittente e destinatario tramite il metodo TrovaPerSessionKey
                     Identity Mittente = TrovaPerSessionKey(SK_Mittente);
                     Identity Destinatario = TrovaPerSessionKey(SK_Destinatario);
 
-                    ElaboraMessaggio(Mittente, Destinatario, Messaggio);
+                    //Se il messaggio ricevuto appartiene a questo client o deve essere smistato
+                    if(Destinatario != null || SK_Destinatario == Me.SessionKey)
+                        ElaboraMessaggio(Mittente, Destinatario, Messaggio);
+                    else
+                        Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.");
                 break;
                 case "CRYPT":
                     break;
@@ -130,7 +135,7 @@ namespace Crypthat_Common
                         Me.SessionKey = Data;
                     break;
                 case "HALOHA":
-                    RegistraUtente(Data, args.Subject.serialPort);
+                    RegistraUtente(Data, sender);
                 break;
             }
         }

@@ -13,10 +13,9 @@ namespace Crypthat_Common.Connessioni
      * i messaggi interi.
      */
 
-    public class Rs232Manager
+    public class Rs232Manager : ConnectionInterface
     {
         //Evento per la ricezione di un messaggio
-        public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
         // Metodo standard per l'invio di Dati ad un destinatario

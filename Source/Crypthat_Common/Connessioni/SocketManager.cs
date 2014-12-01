@@ -19,7 +19,7 @@ namespace Crypthat_Common.Connessioni
      * Server - http://msdn.microsoft.com/it-it/library/5w7b7x5f(v=vs.110).aspx
      */
 
-    public class SocketManager
+    public class SocketManager : ConnectionInterface
     {
         // Classe per mantenere il riferimento ad ogni dato ricevuto
         public class StateObject
@@ -31,7 +31,6 @@ namespace Crypthat_Common.Connessioni
         }
 
         // Evento per la ricezione di un messaggio
-        public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
         public event MessaggioRicevuto OnMessaggioRicevuto;
 
         ManualResetEvent tuttoPronto = new ManualResetEvent(false);
@@ -114,7 +113,7 @@ namespace Crypthat_Common.Connessioni
             }
 
             // Callback chiamato una colta che un client si è connesso
-            public void ConnessioneAccettata(IAsyncResult ar)
+            private void ConnessioneAccettata(IAsyncResult ar)
             {
                 // Ottiene il socket che si occupa della ricezione
                 Socket listener = (Socket)ar.AsyncState;
@@ -147,7 +146,7 @@ namespace Crypthat_Common.Connessioni
         }
 
         // Callback per l'avennuto trasferimento dei dati
-        public void Inviato(IAsyncResult ar)
+        private void Inviato(IAsyncResult ar)
         {
             try
             {
@@ -205,16 +204,27 @@ namespace Crypthat_Common.Connessioni
                     // Una volta letti tutti i dati, controlla che sia finito il comando e chiama l'evento di ricezione messaggio
                     if (state.str.Length > 1 && state.str.Contains("<eof>"))
                     {
-                        if (OnMessaggioRicevuto != null)
-                            OnMessaggioRicevuto(state, new InterLevelArgs(null, state.str.Replace("<eof>", "\n").Replace("<\\", "<")));
-                        else
-                            throw new Exception("Evento di ricezione messaggio non impostato!");
+                        string[] messages = state.str.Split(new string[] { "<eof>" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        // Pulisce i dati dal buffer
+                        state.str = "";
+
+                        //Notifica tutti i messsaggi
+                        for (int i = 0; i < messages.Length; i++)
+                        {
+                            string msg = messages[i].Replace("<\\", "<");
+
+                            if (OnMessaggioRicevuto != null)
+                                OnMessaggioRicevuto(state, new InterLevelArgs(null, msg));
+                            else
+                                throw new Exception("Evento di ricezione messaggio non impostato!");
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Debug.Log(e.ToString(), Debug.LogType.ERROR);
             }
         }
     }

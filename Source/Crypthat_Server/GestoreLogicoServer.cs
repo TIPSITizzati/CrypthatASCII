@@ -16,7 +16,6 @@ namespace Crypthat_Server
      * e di Registrazione degli utenti dal Client.
      * */
 
-    //TODO: Aggiungere interfaccia per la gestione della connessione
     class GestoreLogicoServer : GestoreLogico
     {
         // Costruttore iniziale che mette in ascolto il server su più porte
@@ -52,26 +51,9 @@ namespace Crypthat_Server
                     temp.SessionKey = GeneraSessionKey();   // Genera una chiave per il nuovo utente
                     temp.Name = Name;                       // Ottiene il nome dichiarato dall'utente
 
-                    // Messaggi di debug
-                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", temp.Name, temp.SessionKey), Debug.LogType.INFO);
+                    //Sincronizza i nuovi dati con gli altri utenti
+                    SincronizzaDestinatari(temp, Dati);
 
-                    //Invia la key all'utente che cerca di registrarsi
-                    Rs232Manager.InviaMessaggio("KEY:" + temp.SessionKey, temp);
-
-                    //Aggiorna i dati relativi al server del client
-                    Rs232Manager.InviaMessaggio("HALOHA:" + Me.Name + ":" + Me.SessionKey, temp);
-
-                    // Comunica a tutti gli altri host dell'avvenuta connessione
-                    // E' utilizzata una query linq per risparmiare alcune linee di codice
-                    // Equivalente in SQL = "SELECT * FROM Destinatari WHERE temp.Id <> Destinatari.Id;"
-                    foreach (Identity dest in Destinatari.Where(id => id != temp))
-                    {
-                        //Notifica I destinatari già registrati dalla connessione di "temp"
-                        Rs232Manager.InviaMessaggio("HALOHA:" + Data, dest);
-
-                        //Notifica l'utente registrato degli altri utenti presenti
-                        Rs232Manager.InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, temp);
-                    }
                 break;
                 // In caso si stia usando la modalità Sockets
                 case ModalitaOperativa.Sockets:
@@ -88,27 +70,37 @@ namespace Crypthat_Server
                     Identity nuovoUtente = new Identity(Name, GeneraSessionKey());
                     nuovoUtente.Sock = state.Sock;
 
-                    // Messaggi di debug
-                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", nuovoUtente.Name, nuovoUtente.SessionKey), Debug.LogType.INFO);
+                    //Sincronizza i nuovi dati con gli altri utenti
+                    SincronizzaDestinatari(nuovoUtente, Dati);
 
-                    //Invia la key all'utente che cerca di registrarsi
-                    SocketManager.InviaMessaggio("KEY:" + nuovoUtente.SessionKey, nuovoUtente);
-
-                    //Aggiorna i dati relativi al server del client
-                    SocketManager.InviaMessaggio("HALOHA:" + Me.Name + ":" + Me.SessionKey, nuovoUtente);
-
-                    // Comunica a tutti gli altri host dell'avvenuta connessione
-                    // E' utilizzata una query linq per risparmiare alcune linee di codice
-                    // Equivalente in SQL = "SELECT * FROM Destinatari WHERE temp.Id <> Destinatari.Id;"
-                    foreach (Identity dest in Destinatari.Where(id => id != nuovoUtente))
-                    {
-                        //Notifica I destinatari già registrati dalla connessione di "temp"
-                        SocketManager.InviaMessaggio("HALOHA:" + Data, dest);
-
-                        //Notifica l'utente registrato degli altri utenti presenti
-                        SocketManager.InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, nuovoUtente);
-                    }
                 break;
+            }
+        }
+
+        private void SincronizzaDestinatari(Identity nuovoUtente, string Dati)
+        {
+            // Aggiunge l'utente alla lista destinatari
+            Destinatari.Add(nuovoUtente);
+
+            // Messaggi di debug
+            Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", nuovoUtente.Name, nuovoUtente.SessionKey), Debug.LogType.INFO);
+
+            //Invia la key all'utente che cerca di registrarsi
+            ConnectionManager.InviaMessaggio("KEY:" + nuovoUtente.SessionKey, nuovoUtente);
+
+            //Aggiorna i dati relativi al server del client
+            ConnectionManager.InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, nuovoUtente);
+
+            // Comunica a tutti gli altri host dell'avvenuta connessione
+            // E' utilizzata una query linq per risparmiare alcune linee di codice
+            // Equivalente in SQL = "SELECT * FROM Destinatari WHERE temp.Id <> Destinatari.Id;"
+            foreach (Identity dest in Destinatari.Where(id => id != nuovoUtente))
+            {
+                //Notifica I destinatari già registrati dalla connessione di "temp"
+                ConnectionManager.InviaMessaggio("HALOHA:" + nuovoUtente.Name + ";" + nuovoUtente.SessionKey, dest);
+
+                //Notifica l'utente registrato degli altri utenti presenti
+                ConnectionManager.InviaMessaggio("HALOHA:" + dest.Name + ";" + dest.SessionKey, nuovoUtente);
             }
         }
 
@@ -116,17 +108,8 @@ namespace Crypthat_Server
         protected override void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio)
         {
             //TODO: Per ora effettua solo un semplice smistamento
-            switch (opMode)
-            {
-                case ModalitaOperativa.Rs232:
-                    //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
-                    Rs232Manager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
-                break;
-                case ModalitaOperativa.Sockets:
-                    //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
-                    SocketManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
-                break;
-            }
+            //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
+            ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
         }
 
         //Metodo per generare una stringa alfanumerica valida

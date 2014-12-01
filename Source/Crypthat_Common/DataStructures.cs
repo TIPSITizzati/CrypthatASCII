@@ -26,4 +26,14 @@ namespace Crypthat_Common
         }
     }
 
+    // Delegate per la ricezione di un messaggio
+    public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
+
+    // Interfaccia per unire alcuni metodi comuni
+    public interface ConnectionInterface
+    {
+        event MessaggioRicevuto OnMessaggioRicevuto;
+
+        void InviaMessaggio(string Dati, Identity Destinatario);
+    }
 }
