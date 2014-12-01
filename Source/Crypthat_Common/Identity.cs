@@ -26,7 +26,6 @@ namespace Crypthat_Common
         public SerialPort serialPort { get; set; } //Variabile utilizzata dal server per definire la porta di comunicazione con quella persona (Può essere NULL)
 
         //Sockets
-        public IPEndPoint Address { get; set; } //Variabile utilizzata dai socket per identificare la persona (può essere NULL)
         public Socket Sock { get; set; } //Socket per comunicare con la persona (può essere NULL)
 
         #endregion
