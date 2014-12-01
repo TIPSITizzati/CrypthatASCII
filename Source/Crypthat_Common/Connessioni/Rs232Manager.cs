@@ -38,12 +38,9 @@ namespace Crypthat_Common.Connessioni
 
             if (Dati.Length > 0)
             {
-                Identity temp = new Identity(null, null);
-                temp.serialPort = porta;
-
                 //Richiama l'evento
                 if (OnMessaggioRicevuto != null)
-                    OnMessaggioRicevuto(this, new InterLevelArgs(temp, Dati));
+                    OnMessaggioRicevuto(this, new InterLevelArgs(null, Dati));
                 else
                     throw new Exception("Evento di ricezione messaggio non impostato!");
             }

@@ -15,10 +15,11 @@ namespace Crypthat_Common
      */
     public class GestoreLogico
     {
-        public Identity Me; //Riferimento a se stesso
-        public List<Identity> Destinatari { get; set; } //Lista dei destinatari memorizzati
-        protected ModalitaOperativa opMode; //Modalità in cui il programma funzionerà
-        protected Rs232Manager Rs232Manager; //In caso sia in modalità Rs232
+        public Identity Me; // Riferimento a se stesso
+        public List<Identity> Destinatari { get; set; } // Lista dei destinatari memorizzati
+        protected ModalitaOperativa opMode; // Modalità in cui il programma funzionerà
+        protected Rs232Manager Rs232Manager; // In caso sia in modalità Rs232
+        protected SocketManager SocketManager; // In caso sia in modalità Socket
 
         //Costruttore di default che inizializza il GestoreLogico con un Identità ignota (in attesa di un'Identità dal server)
         public GestoreLogico(ModalitaOperativa opMode)
@@ -26,6 +27,21 @@ namespace Crypthat_Common
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
             this.Me = new Identity(null, null);
+
+            switch (opMode)
+            {
+                //Inizializza la parte Rs232
+                case ModalitaOperativa.Rs232:
+                    Debug.Log("Inizializzazione manager RS232...");
+                    Rs232Manager = new Rs232Manager();                              // Inizializza RS232Manager
+                    Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
+                break;
+                //Inizializza la parte Socket
+                case ModalitaOperativa.Sockets:
+                    Debug.Log("Inizializzazione manager Sockets...");
+                    SocketManager = new SocketManager();
+                break;
+            }
 
             Debug.Log("Inizializzazione GestoreLogico...");
         }
@@ -40,20 +56,16 @@ namespace Crypthat_Common
                     foreach (string Name in SerialPort.GetPortNames())
                         Inizializza(Name);
                 break;
+
+                case ModalitaOperativa.Sockets:
+                    SocketManager.Ascolta();
+                break;
             }
         }
 
         // Metodo che inizializza una porta specifica Rs232
         public void Inizializza(string NomePorta)
         {
-            // Se RS232Manager non è inizializzato
-            if (Rs232Manager == null)
-            {
-                Debug.Log("Inizializzazione manager RS232...");
-                Rs232Manager = new Rs232Manager();                              // Inizializza RS232Manager
-                Rs232Manager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
-            }
-
             Identity Ignoto = new Identity(null, null); // Non sapendo a chi si è connessi, viene creata un Identità ignota
             Rs232Manager.InizializzaPorta(Ignoto, NomePorta); // Viene aperta la connessione sulla porta richiesta
 
