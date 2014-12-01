@@ -16,6 +16,7 @@ namespace Crypthat_Server
      * e di Registrazione degli utenti dal Client.
      * */
 
+    //TODO: Aggiungere interfaccia per la gestione della connessione
     class GestoreLogicoServer : GestoreLogico
     {
         // Costruttore iniziale che mette in ascolto il server su più porte
@@ -72,6 +73,42 @@ namespace Crypthat_Server
                         Rs232Manager.InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, temp);
                     }
                 break;
+                // In caso si stia usando la modalità Sockets
+                case ModalitaOperativa.Sockets:
+                    SocketManager.StateObject state = (SocketManager.StateObject)Source;
+
+                    // Se qualcuno è già registrato con quel socket
+                    if (TrovaPerSocket(state.Sock) != null)
+                    {
+                        Debug.Log(String.Format("Utente {0} già registrato!", state.Sock.RemoteEndPoint.ToString()), Debug.LogType.ERROR);
+                        return;
+                    }
+
+                    //Crea una identity per l'utente registrato
+                    Identity nuovoUtente = new Identity(Name, GeneraSessionKey());
+                    nuovoUtente.Sock = state.Sock;
+
+                    // Messaggi di debug
+                    Debug.Log(String.Format("Registrazione utente {0} con SessionKey = {1}", nuovoUtente.Name, nuovoUtente.SessionKey), Debug.LogType.INFO);
+
+                    //Invia la key all'utente che cerca di registrarsi
+                    SocketManager.InviaMessaggio("KEY:" + nuovoUtente.SessionKey, nuovoUtente);
+
+                    //Aggiorna i dati relativi al server del client
+                    SocketManager.InviaMessaggio("HALOHA:" + Me.Name + ":" + Me.SessionKey, nuovoUtente);
+
+                    // Comunica a tutti gli altri host dell'avvenuta connessione
+                    // E' utilizzata una query linq per risparmiare alcune linee di codice
+                    // Equivalente in SQL = "SELECT * FROM Destinatari WHERE temp.Id <> Destinatari.Id;"
+                    foreach (Identity dest in Destinatari.Where(id => id != nuovoUtente))
+                    {
+                        //Notifica I destinatari già registrati dalla connessione di "temp"
+                        SocketManager.InviaMessaggio("HALOHA:" + Data, dest);
+
+                        //Notifica l'utente registrato degli altri utenti presenti
+                        SocketManager.InviaMessaggio("HALOHA:" + dest.SessionKey + ":" + dest.Name, nuovoUtente);
+                    }
+                break;
             }
         }
 
@@ -84,6 +121,10 @@ namespace Crypthat_Server
                 case ModalitaOperativa.Rs232:
                     //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
                     Rs232Manager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
+                break;
+                case ModalitaOperativa.Sockets:
+                    //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
+                    SocketManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
                 break;
             }
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
+using System.Net.Sockets;
 
 using Crypthat_Common;
 using Crypthat_Common.Connessioni;
@@ -165,6 +166,16 @@ namespace Crypthat_Common
                     return i;
             return null;
         }
+
+        // Utilizzata per Destinatari di cui si conosce solo il Socket di provenienza
+        public Identity TrovaPerSocket(Socket sock)
+        {
+            foreach (Identity i in Destinatari)
+                if (i.Sock == sock)
+                    return i;
+            return null;
+        }
+
         #endregion
 
     }
