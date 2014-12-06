@@ -222,7 +222,7 @@ namespace Crypthat_Common.Connessioni
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Simula la disconnessione di un client
                 if (OnMessaggioRicevuto != null)
@@ -230,7 +230,7 @@ namespace Crypthat_Common.Connessioni
                 else
                     throw new Exception("Evento di ricezione messaggio non impostato!");
 
-                Debug.Log(String.Format("Errore durante la comunicazione con {0}, disconnessione del client forzata!", ((StateObject)ar.AsyncState).Sock.RemoteEndPoint.ToString()), Debug.LogType.WARNING);
+                Debug.Log(String.Format("Errore durante la comunicazione con {0}, disconnessione del client forzata!\nError: {1}", ((StateObject)ar.AsyncState).Sock.RemoteEndPoint.ToString(), ex.Message), Debug.LogType.WARNING);
             }
         }
     }
