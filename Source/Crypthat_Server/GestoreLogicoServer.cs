@@ -16,7 +16,7 @@ namespace Crypthat_Server
      * e di Registrazione degli utenti dal Client.
      * */
 
-    class GestoreLogicoServer : GestoreLogico
+    public class GestoreLogicoServer : GestoreLogico
     {
         // Costruttore iniziale che mette in ascolto il server su più porte
         public GestoreLogicoServer(ModalitaOperativa opMode) : base(opMode) 
@@ -104,12 +104,34 @@ namespace Crypthat_Server
             }
         }
 
-        //Smista i messaggi ricevuti ad i corrispettivi destinatari
+        // Smista i messaggi ricevuti ad i corrispettivi destinatari
         protected override void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio)
         {
             //TODO: Per ora effettua solo un semplice smistamento
             //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
             ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
+        }
+
+        // Disconnette l'utente (sia in caso di disconnessione forzata che in caso di disconnessione concordata)
+        protected override void UtenteDisconnesso(string Dati, object Source)
+        {
+            switch(opMode)
+            {
+                case ModalitaOperativa.Rs232:
+                    // Per ora non è implementato
+
+                break;
+                case ModalitaOperativa.Sockets:
+                    // Identifica che utente si è disconnesso e lo rimuove dalla lista dei destinatari
+                    Identity utenteDisconnesso = TrovaPerSocket((System.Net.Sockets.Socket)Source);
+                    Destinatari.Remove(utenteDisconnesso);
+
+                    // Avvisa tutti gli utenti connessi dell'avvenuta disconnessione
+                    foreach (Identity dest in Destinatari)
+                        ConnectionManager.InviaMessaggio("DISCONNECTED:" + utenteDisconnesso.SessionKey, dest);
+
+                break;
+            }
         }
 
         //Metodo per generare una stringa alfanumerica valida

@@ -155,7 +155,7 @@ namespace Crypthat_Common.Connessioni
 
                 // Invia i dati all'host remoto
                 int bytesSent = dest.Sock.EndSend(ar);
-                Debug.Log(String.Format("Inviati {0} a {1}.", bytesSent, dest.Sock.RemoteEndPoint.ToString()));
+                Debug.Log(String.Format("Inviati {0} bytes a {1}.", bytesSent, dest.Sock.RemoteEndPoint.ToString()));
             }
             catch (Exception e)
             {
@@ -222,9 +222,15 @@ namespace Crypthat_Common.Connessioni
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                Debug.Log(e.ToString(), Debug.LogType.ERROR);
+                // Simula la disconnessione di un client
+                if (OnMessaggioRicevuto != null)
+                    OnMessaggioRicevuto(((StateObject)ar.AsyncState).Sock, new InterLevelArgs(null, "DISCONNECTED:;"));
+                else
+                    throw new Exception("Evento di ricezione messaggio non impostato!");
+
+                Debug.Log(String.Format("Errore durante la comunicazione con {0}, disconnessione del client forzata!", ((StateObject)ar.AsyncState).Sock.RemoteEndPoint.ToString()), Debug.LogType.WARNING);
             }
         }
     }

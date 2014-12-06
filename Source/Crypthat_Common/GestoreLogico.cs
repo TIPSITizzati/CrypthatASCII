@@ -136,13 +136,17 @@ namespace Crypthat_Common
                     break;
                 case "HALOHA":
                     RegistraUtente(Data, sender);
-                break;
+                    break;
+                case "DISCONNECTED":
+                    UtenteDisconnesso(Data, sender);
+                    break;
             }
         }
 
         //Metodi diversificati per client e server
         protected virtual void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio) { }
         protected virtual void RegistraUtente(string Dati, object Source) { }
+        protected virtual void UtenteDisconnesso(string Dati, object Source) { }
 
         //Metodi di ricerca delle Identity nella lista dei destinatari
         #region MetodiIdentity

@@ -9,7 +9,7 @@ using Crypthat_Common.Connessioni;
 
 namespace Crypthat_Client
 {
-    class GestoreLogicoClient : GestoreLogico
+    public class GestoreLogicoClient : GestoreLogico
     {
 
         // Delegate per gli eventi grafici
@@ -18,6 +18,7 @@ namespace Crypthat_Client
         // Eventi
         public event EventoRicevuto OnMessaggioRicevuto;    // Evento scatenato quando un messaggio viene ricevuto
         public event EventoRicevuto OnUtenteRegistrato;     // Evento ricevuto quando un utente si è registrato
+        public event EventoRicevuto OnUtenteDisconnesso;     // Evento ricevuto quando un utente si è registrato
 
 
         public GestoreLogicoClient(ModalitaOperativa opMode, Identity Me, string NomePorta)
@@ -44,7 +45,10 @@ namespace Crypthat_Client
         {
             //Autenticazione con il server
             if (Destinatari.Count > 0)
+            {
                 ConnectionManager.InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, Destinatari[0]);
+                Destinatari.Remove(Destinatari[0]);
+            }
         }
 
         //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
@@ -91,6 +95,29 @@ namespace Crypthat_Client
                 OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
             else
                 throw new Exception("Evento di ricezione messaggio non impostato!");
+        }
+
+        // Gestisce la disconnessione di un utente dalla chat
+        protected override void UtenteDisconnesso(string Dati, object Source)
+        {
+            // Trova il riferimento all'utente disconnesso
+            Identity utenteDisconnesso = TrovaPerSessionKey(Dati);
+
+            int index = -1;
+            // Se l'utente disconnesso è registrato nella lista dei destinatari
+            if(utenteDisconnesso != null)
+            {
+                // Ottiene un riferimento per la parte grafica alla posizione dell'utente
+                // nella lista destinatari e cancella l'utente disconnesso dalla lista.
+                index = Destinatari.IndexOf(utenteDisconnesso);
+                Destinatari.Remove(utenteDisconnesso);
+            }
+
+            // Passa le informazioni al livello grafico
+            if (OnUtenteDisconnesso != null)
+                OnUtenteDisconnesso(this, new InterLevelArgs(utenteDisconnesso, index));
+            else
+                throw new Exception("Evento di disconnession utente non impostato!");
         }
     }
 }

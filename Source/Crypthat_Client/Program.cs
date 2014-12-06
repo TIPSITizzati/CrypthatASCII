@@ -1,5 +1,4 @@
-﻿#define DEBUG
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,9 @@ namespace Crypthat_Client
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm());
+                MainForm mainForm = new MainForm();
+                mainForm.Show();
+                Application.Run();
             }
         #else
             public static GestoreLogicoClient mng;
