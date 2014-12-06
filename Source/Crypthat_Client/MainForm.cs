@@ -31,7 +31,6 @@ namespace Crypthat_Client
             gbSockets.Enabled = true;
             gbRs232.Enabled = false;
             cbNomePorta.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-            cbNomePorta.SelectedIndex = 0;
             txtIpAddress.Text = "127.0.0.1";
             nPorta.Maximum = 65535;
             nPorta.Minimum = 1;
