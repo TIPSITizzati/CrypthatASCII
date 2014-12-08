@@ -92,11 +92,21 @@ namespace Crypthat_Common
         }
 
         // Invia i messaggi al livello sottostante in base ad opMode
-        // I dati vengono criptati di default
-        public void InviaMessaggio(string Messaggio, Identity Destinatario, bool Encrypted = true)
+        // I dati NON vengono criptati di default
+        public void InviaMessaggio(string Messaggio, Identity Destinatario, bool Encrypted = false)
         {
-            //TODO: Aggiungere crittografia
-            ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
+            if(!Encrypted)
+                ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
+            else
+            {
+                byte[][] AES_DATA = AESCypher.Encrypt(Messaggio);
+                string AES_KEY_RSA = Convert.ToBase64String(RSACypher.EncryptDecrypt(AES_DATA[0], Destinatario.RSAContainer.PublicKey));
+                string AES_IV_RSA = Convert.ToBase64String(RSACypher.EncryptDecrypt(AES_DATA[1], Destinatario.RSAContainer.PublicKey));
+                string AES_Messaggio = Convert.ToBase64String(AES_DATA[2]).Replace("<", "<\\");
+                string MessaggioCifrato = String.Format("CRYPT:{0}?{1};{2}<KEY>{3}<IV>{4}", Me.SessionKey, Destinatario.SessionKey, AES_Messaggio, AES_KEY_RSA, AES_IV_RSA);
+
+                ConnectionManager.InviaMessaggio(MessaggioCifrato, Destinatario);
+            }
         }
 
         /*
@@ -140,7 +150,7 @@ namespace Crypthat_Common
                 break;
                 case "CRYPT":
                     // Messaggio cifrato in arrivo
-                    // Sintassi: CRYPT:<SK_Mittente>?<SK_Destinatario>;<Messaggio_Cifrato_AES>*<Chiave_Simmetrica_Cifrata_RSA>
+                    // Sintassi: CRYPT:<SK_Mittente>?<SK_Destinatario>;<Messaggio_Cifrato_AES><Key><Chiave_Simmetrica_Cifrata_RSA><IV><Chiave_IV_Cifrata_RSA>
                     // Sintassi <Messaggio_Cifrato_AES>: <ASCII_Encyption_Attiva>;<Dati>
                     SessionKeys = Data.Split(';')[0];
                     string Dati = Data.Remove(0, Data.IndexOf(';') + 1);
@@ -152,6 +162,25 @@ namespace Crypthat_Common
                     // Ottiene i dati di mittente e destinatario tramite il metodo TrovaPerSessionKey
                     Mittente = TrovaPerSessionKey(SK_Mittente);
                     Destinatario = TrovaPerSessionKey(SK_Destinatario);
+
+                    // Controlla che il mittente sia quello reale
+                    switch (opMode)
+                    {
+                        case ModalitaOperativa.Rs232:
+                            if (Mittente.serialPort != (System.IO.Ports.SerialPort)sender)
+                            {
+                                Debug.Log(((System.IO.Ports.SerialPort)sender).PortName + " sta cercando di inviare una messaggio cifrato sotto falsa identità!", Debug.LogType.WARNING);
+                                return;
+                            }
+                            break;
+                        case ModalitaOperativa.Sockets:
+                            if (Mittente.Sock != ((SocketManager.StateObject)sender).Sock)
+                            {
+                                Debug.Log(((SocketManager.StateObject)sender).Sock.RemoteEndPoint.ToString() + " sta cercando di inviare una messaggio cifrato sotto falsa identità!", Debug.LogType.WARNING);
+                                return;
+                            }
+                            break;
+                    }
 
                     //Se il messaggio ricevuto appartiene a questo client o deve essere smistato
                     if (Destinatario != null || SK_Destinatario == Me.SessionKey)

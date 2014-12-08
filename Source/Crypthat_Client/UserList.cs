@@ -93,13 +93,13 @@ namespace Crypthat_Client
                 
                 // Se la chat con l'utente da cui arriva il messaggio è già attiva
                 if(chatAttive.ContainsKey(args.Subject))
-                    chatAttive[args.Subject].ScriviMessaggio(args.Data.ToString(), args.Subject);
+                    chatAttive[args.Subject].ScriviMessaggio(args.Data.ToString(), args.Subject, (bool)sender == false ? Color.Black : Color.DarkGreen);
                 else  // Sennò crea la chat relativa
                 {
                     ChatForm nuovaChat = new ChatForm(this, gestoreClient, args.Subject);
                     nuovaChat.Show();
                     chatAttive.Add(args.Subject, nuovaChat);
-                    nuovaChat.ScriviMessaggio(args.Data.ToString(), args.Subject);
+                    nuovaChat.ScriviMessaggio(args.Data.ToString(), args.Subject, (bool)sender == false ? Color.Black : Color.DarkGreen);
                 }
             }));
         }

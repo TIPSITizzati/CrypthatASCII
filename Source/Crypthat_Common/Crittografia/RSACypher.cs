@@ -37,9 +37,9 @@ namespace Crypthat_Common.Crittografia
         }
 
         // Restituisce un array di byte sempre pari (Unicode usa 2 byte per carattere)
-        public static byte[] EncryptDecrypt(byte[] CypherText, string Key)
+        public static byte[] EncryptDecrypt(byte[] Message, string Key)
         {
-            BigInteger C = new BigInteger(CypherText);
+            BigInteger C = new BigInteger(Message);
             BigInteger D = BigInteger.Parse(Key.Split(',')[0]);
             BigInteger N = BigInteger.Parse(Key.Split(',')[1]);
 
@@ -123,8 +123,7 @@ namespace Crypthat_Common.Crittografia
             }
         }
 
-        // Ritorna il numero dispari più piccolo (i) per il quale il minimo comune divisore tra i ed Number
-        // è uguale a 1
+        // Ritorna il numero dispari più piccolo (i) per il quale il minimo comune divisore tra i ed Number è uguale a 1
         public static BigInteger GetSmallOddInteger(BigInteger Number)
         {
             for (BigInteger i = 3; i < Number; i += 2)

@@ -33,6 +33,7 @@
             this.barraStato = new System.Windows.Forms.ToolStrip();
             this.lblName = new System.Windows.Forms.ToolStripLabel();
             this.btnSend = new System.Windows.Forms.Button();
+            this.chkEncrypt = new System.Windows.Forms.CheckBox();
             this.barraStato.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,7 +44,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtChat.Location = new System.Drawing.Point(12, 28);
             this.txtChat.Name = "txtChat";
-            this.txtChat.Size = new System.Drawing.Size(449, 205);
+            this.txtChat.Size = new System.Drawing.Size(449, 210);
             this.txtChat.TabIndex = 0;
             this.txtChat.Text = "";
             // 
@@ -51,7 +52,7 @@
             // 
             this.txtSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSend.Location = new System.Drawing.Point(12, 239);
+            this.txtSend.Location = new System.Drawing.Point(12, 244);
             this.txtSend.Name = "txtSend";
             this.txtSend.Size = new System.Drawing.Size(285, 77);
             this.txtSend.TabIndex = 1;
@@ -75,7 +76,7 @@
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(303, 239);
+            this.btnSend.Location = new System.Drawing.Point(303, 244);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(158, 77);
             this.btnSend.TabIndex = 3;
@@ -83,11 +84,23 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // chkEncrypt
+            // 
+            this.chkEncrypt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkEncrypt.AutoSize = true;
+            this.chkEncrypt.Location = new System.Drawing.Point(12, 324);
+            this.chkEncrypt.Name = "chkEncrypt";
+            this.chkEncrypt.Size = new System.Drawing.Size(53, 17);
+            this.chkEncrypt.TabIndex = 4;
+            this.chkEncrypt.Text = "Cripta";
+            this.chkEncrypt.UseVisualStyleBackColor = true;
+            // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 337);
+            this.ClientSize = new System.Drawing.Size(473, 342);
+            this.Controls.Add(this.chkEncrypt);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.barraStato);
             this.Controls.Add(this.txtSend);
@@ -110,5 +123,6 @@
         private System.Windows.Forms.ToolStrip barraStato;
         private System.Windows.Forms.ToolStripLabel lblName;
         private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.CheckBox chkEncrypt;
     }
 }

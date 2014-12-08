@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Crypthat_Common;
 using Crypthat_Common.Connessioni;
+using Crypthat_Common.Crittografia;
 
 namespace Crypthat_Client
 {
@@ -43,7 +44,7 @@ namespace Crypthat_Client
 
         private void Autenticazione()
         {
-            //Autenticazione con il server
+            // Autenticazione con il server
             if (Destinatari.Count > 0)
             {
                 ConnectionManager.InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, Destinatari[0]);
@@ -51,7 +52,7 @@ namespace Crypthat_Client
             }
         }
 
-        //Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
+        // Modifica il metodo di ricezione Haloha per reinviare i dati a tutti i client
         protected override void RegistraUtente(string Dati, object Source)
         {
             string[] Data = Dati.Split(';');
@@ -71,7 +72,7 @@ namespace Crypthat_Client
 
 
             Identity Ignoto = null;
-            //Controlla che la SessionKey utilizzata non sia già presente
+            // Controlla che la SessionKey utilizzata non sia già presente
             if ((Ignoto = TrovaPerSessionKey(SessionKey)) == null)
                 Destinatari.Add(temp);
             else
@@ -85,19 +86,40 @@ namespace Crypthat_Client
                 // Simula la creazione di una chiave
                 AggiornaChiaviAsimmetriche(Me.RSAContainer);
 
-            //Richiama l'evento di registrazione di un utente (Per la parte grafica)
+            // Richiama l'evento di registrazione di un utente (Per la parte grafica)
             if (OnUtenteRegistrato != null)
                 OnUtenteRegistrato(this, new InterLevelArgs(temp, null));
             else
                 throw new Exception("Evento di registrazione utente non impostato!");
         }
 
-        //Richiama l'evento per l'interfaccia grafica
+        // Richiama l'evento per l'interfaccia grafica
         protected override void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio)
         {
-            //Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
+            // Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
             if (OnMessaggioRicevuto != null)
-                OnMessaggioRicevuto(this, new InterLevelArgs(Mittente, Messaggio));
+                OnMessaggioRicevuto(false, new InterLevelArgs(Mittente, Messaggio));
+            else
+                throw new Exception("Evento di ricezione messaggio non impostato!");
+        }
+
+        // Decifra il messaggio cifrato e lo manda all'interfaccia
+        protected override void ElaboraMessaggioCifrato(Identity Mittente, Identity Destinatario, string Data)
+        {
+            // Ricompone le parti del messaggio cifrato con AES
+            string[] Parts = Data.Split(new string[] { "<KEY>" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] Keys = Parts[1].Split(new string[] { "<IV>" }, StringSplitOptions.RemoveEmptyEntries);
+            byte[] AES_Messaggio = Convert.FromBase64String(Parts[0].Replace("<\\", "<"));
+
+            byte[] AES_KEY = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[0]), Me.RSAContainer.PrivateKey);
+            byte[] AES_IV = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[1]), Me.RSAContainer.PrivateKey);
+
+            // Decifra il messaggio con la chiave simmetrica ottenuta
+            string Messaggio = AESCypher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
+
+            // Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
+            if (OnMessaggioRicevuto != null)
+                OnMessaggioRicevuto(true, new InterLevelArgs(Mittente, Messaggio));
             else
                 throw new Exception("Evento di ricezione messaggio non impostato!");
         }

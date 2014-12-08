@@ -65,19 +65,22 @@ namespace Crypthat_Client
             if(!String.IsNullOrEmpty(txtSend.Text.Replace("\n", "")))
             {
                 // Invia il messaggio
-                gestoreClient.InviaMessaggio(txtSend.Text, dest, false);
-                ScriviMessaggio(txtSend.Text, gestoreClient.Me);
+                gestoreClient.InviaMessaggio(txtSend.Text, dest, chkEncrypt.Checked);
+                ScriviMessaggio(txtSend.Text, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
                 txtSend.Clear();
             }
         }
 
 
-        public void ScriviMessaggio(string Messaggio, Identity Mittente)
+        public void ScriviMessaggio(string Messaggio, Identity Mittente, Color Colore)
         {
+            // Colora il testo ed effettua l'autoscroll
+            txtChat.SelectionStart = txtChat.TextLength;
+            txtChat.SelectionLength = 0;
+
+            txtChat.SelectionColor = Colore;
             txtChat.AppendText(String.Format("[{0}] {1} - {2}\n", DateTime.Now.ToShortTimeString(), Mittente.Name, Messaggio));
-            
-            // Effettua l'auto-scroll alla fine
-            txtChat.SelectionStart = txtChat.Text.Length; 
+            txtChat.SelectionColor = txtChat.ForeColor;
             txtChat.ScrollToCaret();
 
             if(!this.Focused)
@@ -91,7 +94,7 @@ namespace Crypthat_Client
         {
             btnSend.Enabled = false;
             txtSend.Enabled = false;
-            ScriviMessaggio("Offline", dest);
+            ScriviMessaggio("Offline", dest, Color.Red);
         }
 
         // Parte aggiunta per avere l'icona lampeggiante copiata da http://stackoverflow.com/questions/11309827/window-application-flash-like-orange-on-taskbar-when-minimize

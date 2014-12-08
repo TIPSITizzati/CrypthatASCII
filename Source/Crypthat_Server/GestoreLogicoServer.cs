@@ -115,6 +115,13 @@ namespace Crypthat_Server
             ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
         }
 
+        protected override void ElaboraMessaggioCifrato(Identity Mittente, Identity Destinatario, string Data)
+        {
+            //TODO: Per ora effettua solo un semplice smistamento
+            //Inoltra il messaggio al destinatario richiesto, mantanendo il mittente originario
+            ConnectionManager.InviaMessaggio(String.Format("CRYPT:{0}?{1};{2}", Mittente.SessionKey, Destinatario.SessionKey, Data), Destinatario);
+        }
+
         // Disconnette l'utente (sia in caso di disconnessione forzata che in caso di disconnessione concordata)
         protected override void UtenteDisconnesso(string Dati, object Source)
         {
