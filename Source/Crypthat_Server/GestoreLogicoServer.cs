@@ -96,11 +96,14 @@ namespace Crypthat_Server
             // Equivalente in SQL = "SELECT * FROM Destinatari WHERE temp.Id <> Destinatari.Id;"
             foreach (Identity dest in Destinatari.Where(id => id != nuovoUtente))
             {
-                //Notifica I destinatari già registrati dalla connessione di "temp"
+                // Notifica I destinatari già registrati dalla connessione di "temp"
                 ConnectionManager.InviaMessaggio("HALOHA:" + nuovoUtente.Name + ";" + nuovoUtente.SessionKey, dest);
 
-                //Notifica l'utente registrato degli altri utenti presenti
+                // Notifica l'utente registrato degli altri utenti presenti
                 ConnectionManager.InviaMessaggio("HALOHA:" + dest.Name + ";" + dest.SessionKey, nuovoUtente);
+
+                // Sincronizza le varie chiavi RSA pubbliche attuali
+                ConnectionManager.InviaMessaggio(String.Format("CRYPTKEY:{0};{1}", dest.SessionKey, dest.RSAContainer.PublicKey), nuovoUtente);
             }
         }
 
@@ -132,6 +135,27 @@ namespace Crypthat_Server
 
                 break;
             }
+        }
+
+        // Metodo chiamato allo scadere della coppia di chiavi RSA attuali
+        protected override void AggiornaChiaviAsimmetriche(RSAContainer newContainer)
+        {
+            foreach(Identity dest in Destinatari)
+                ConnectionManager.InviaMessaggio(String.Format("CRYPTKEY:{0};{1}", Me.SessionKey, newContainer.PublicKey), dest);
+            this.Me.RSAContainer = newContainer;
+        }
+
+        // Registra la nuova chiave ricevuta
+        protected override void RegistraCriptoKey(string Dati, Identity Mittente)
+        {
+            if (Mittente.RSAContainer == null)
+                Mittente.RSAContainer = new RSAContainer();
+
+            Mittente.RSAContainer.PublicKey = Dati;
+
+            // Aggiorno gli altri utenti
+            foreach (Identity dest in Destinatari.Where(id => id != Mittente))
+                ConnectionManager.InviaMessaggio(String.Format("CRYPTKEY:{0};{1}", Mittente.SessionKey, Dati), dest);
         }
 
         //Metodo per generare una stringa alfanumerica valida

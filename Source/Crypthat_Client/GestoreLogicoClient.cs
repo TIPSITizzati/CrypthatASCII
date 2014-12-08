@@ -21,20 +21,20 @@ namespace Crypthat_Client
         public event EventoRicevuto OnUtenteDisconnesso;     // Evento ricevuto quando un utente si è registrato
 
 
-        public GestoreLogicoClient(ModalitaOperativa opMode, Identity Me, string NomePorta)
+        public GestoreLogicoClient(ModalitaOperativa opMode, string Name, string NomePorta)
             : base(opMode)
         {
-            this.Me = Me;
+            this.Me.Name = Name;
 
             Inizializza(NomePorta);
 
             Autenticazione();
         }
 
-        public GestoreLogicoClient(ModalitaOperativa opMode, Identity Me, System.Net.IPEndPoint serverEndpoint)
+        public GestoreLogicoClient(ModalitaOperativa opMode, string Name, System.Net.IPEndPoint serverEndpoint)
             : base(opMode)
         {
-            this.Me = Me;
+            this.Me.Name = Name;
 
             Inizializza(serverEndpoint);
 
@@ -80,6 +80,11 @@ namespace Crypthat_Client
                 Ignoto.Name = Name;
             }
 
+            // Se si è appena registrato il server
+            if(Destinatari.Count == 1)
+                // Simula la creazione di una chiave
+                AggiornaChiaviAsimmetriche(Me.RSAContainer);
+
             //Richiama l'evento di registrazione di un utente (Per la parte grafica)
             if (OnUtenteRegistrato != null)
                 OnUtenteRegistrato(this, new InterLevelArgs(temp, null));
@@ -118,6 +123,25 @@ namespace Crypthat_Client
                 OnUtenteDisconnesso(this, new InterLevelArgs(utenteDisconnesso, index));
             else
                 throw new Exception("Evento di disconnession utente non impostato!");
+        }
+
+        // Metodo chiamato allo scadere della coppia di chiavi RSA attuali
+        protected override void AggiornaChiaviAsimmetriche(RSAContainer newContainer)
+        {
+            if (Destinatari.Count > 0)
+            {
+                ConnectionManager.InviaMessaggio(String.Format("CRYPTKEY:{0};{1}", Me.SessionKey, newContainer.PublicKey), Destinatari[0]);
+                this.Me.RSAContainer = newContainer;
+            }
+        }
+
+        // Registra la nuova chiave ricevuta
+        protected override void RegistraCriptoKey(string Dati, Identity Mittente)
+        {
+            if(Mittente.RSAContainer == null)
+                Mittente.RSAContainer = new RSAContainer();
+
+            Mittente.RSAContainer.PublicKey = Dati;
         }
     }
 }

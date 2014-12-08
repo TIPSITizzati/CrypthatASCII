@@ -8,6 +8,7 @@ using System.Net.Sockets;
 
 using Crypthat_Common;
 using Crypthat_Common.Connessioni;
+using Crypthat_Common.Crittografia;
 
 namespace Crypthat_Common
 {
@@ -20,6 +21,7 @@ namespace Crypthat_Common
         public List<Identity> Destinatari { get; set; } // Lista dei destinatari memorizzati
         protected ModalitaOperativa opMode; // Modalità in cui il programma funzionerà
         protected ConnectionInterface ConnectionManager; // Gestisce gli eventi comuni di tutte le interfacce di connessione (per ora Rs232 e Sockets)
+        protected RSACypher.RSACryptoService RSACryptoService;
 
         //Costruttore di default che inizializza il GestoreLogico con un Identità ignota (in attesa di un'Identità dal server)
         public GestoreLogico(ModalitaOperativa opMode)
@@ -27,6 +29,11 @@ namespace Crypthat_Common
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
             this.Me = new Identity(null, null);
+            this.RSACryptoService = new RSACypher.RSACryptoService();
+
+            // Genera le chiavi RSA necessarie
+            this.Me.RSAContainer = RSACypher.GenerateKeyPair(512);
+            RSACryptoService.Start(30);
 
             switch (opMode)
             {
@@ -42,6 +49,7 @@ namespace Crypthat_Common
                 break;
             }
 
+            RSACryptoService.NewKeyPair += AggiornaChiaviAsimmetriche;           // Imposta l'evento di rigenerazione delle chiavi RSA
             ConnectionManager.OnMessaggioRicevuto += InterpretaTipoMessaggio;    // Imposta l'evento OnMessaggioRicevuto in modo che chiami il metodo InterpretaTipoMessaggio
 
             Debug.Log("Inizializzazione GestoreLogico...");
@@ -105,20 +113,24 @@ namespace Crypthat_Common
             string Header = msg.Split(':')[0];
             string Data = msg.Substring(msg.IndexOf(':') + 1);
 
+            // Variabili comuni
+            string SessionKeys, SK_Mittente, SK_Destinatario;
+            Identity Mittente, Destinatario;
+
             // Switch per i vari header
             switch (Header)
             {
                 case "MSG":
-                    string SessionKeys = Data.Split(';')[0];
+                    SessionKeys = Data.Split(';')[0];
                     string Messaggio = Data.Remove(0, Data.IndexOf(';') + 1);
 
                     // Divide le due SessionKeys
-                    string SK_Mittente = SessionKeys.Split('?')[0];
-                    string SK_Destinatario = SessionKeys.Split('?')[1];
+                    SK_Mittente = SessionKeys.Split('?')[0];
+                    SK_Destinatario = SessionKeys.Split('?')[1];
 
                     // Ottiene i dati di mittente e destinatario tramite il metodo TrovaPerSessionKey
-                    Identity Mittente = TrovaPerSessionKey(SK_Mittente);
-                    Identity Destinatario = TrovaPerSessionKey(SK_Destinatario);
+                    Mittente = TrovaPerSessionKey(SK_Mittente);
+                    Destinatario = TrovaPerSessionKey(SK_Destinatario);
 
                     //Se il messaggio ricevuto appartiene a questo client o deve essere smistato
                     if(Destinatario != null || SK_Destinatario == Me.SessionKey)
@@ -127,11 +139,63 @@ namespace Crypthat_Common
                         Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.");
                 break;
                 case "CRYPT":
-                    break;
+                    // Messaggio cifrato in arrivo
+                    // Sintassi: CRYPT:<SK_Mittente>?<SK_Destinatario>;<Messaggio_Cifrato_AES>*<Chiave_Simmetrica_Cifrata_RSA>
+                    // Sintassi <Messaggio_Cifrato_AES>: <ASCII_Encyption_Attiva>;<Dati>
+                    SessionKeys = Data.Split(';')[0];
+                    string Dati = Data.Remove(0, Data.IndexOf(';') + 1);
+
+                    // Divide le due SessionKeys
+                    SK_Mittente = SessionKeys.Split('?')[0];
+                    SK_Destinatario = SessionKeys.Split('?')[1];
+
+                    // Ottiene i dati di mittente e destinatario tramite il metodo TrovaPerSessionKey
+                    Mittente = TrovaPerSessionKey(SK_Mittente);
+                    Destinatario = TrovaPerSessionKey(SK_Destinatario);
+
+                    //Se il messaggio ricevuto appartiene a questo client o deve essere smistato
+                    if (Destinatario != null || SK_Destinatario == Me.SessionKey)
+                        ElaboraMessaggioCifrato(Mittente, Destinatario, Dati);
+                    else
+                        Debug.Log("Ricevuto messaggio con SessionKey non combaciante, rifiuto del messaggio.");
+                break;
+                case "CRYPTKEY":
+                    // Struttura: CRYPTKEY:<SK_Mittente>;<Chiave_RSA_Pubblica>
+                    SK_Mittente = Data.Split(';')[0];
+                    string ChiavePubblica = Data.Remove(0, Data.IndexOf(';') + 1);
+
+                    //Trova il mittente del messaggio
+                    Mittente = TrovaPerSessionKey(SK_Mittente);
+
+                    // Controlla che il mittente sia quello reale
+                    switch(opMode)
+                    {
+                        case ModalitaOperativa.Rs232:
+                            if (Mittente.serialPort != (System.IO.Ports.SerialPort)sender)
+                            {
+                                Debug.Log(((System.IO.Ports.SerialPort)sender).PortName + " sta cercando di inviare una chiave RSA che non gli appartiene!", Debug.LogType.WARNING);
+                                return;
+                            }
+                        break;
+                        case ModalitaOperativa.Sockets:
+                            if (Mittente.Sock != ((SocketManager.StateObject)sender).Sock)
+                            {
+                                Debug.Log(((SocketManager.StateObject)sender).Sock.RemoteEndPoint.ToString() + " sta cercando di inviare una chiave RSA che non gli appartiene!", Debug.LogType.WARNING);
+                                return;
+                            }
+                        break;
+                    }
+
+                    // Annuncia la registrazione in DEBUG
+                    Debug.Log(String.Format("Registrazione di una nuova Chiave Pubblica RSA per {0}!", Mittente.Name));
+
+                    // Chiave pubblica di un host in arrivo
+                    RegistraCriptoKey(ChiavePubblica, Mittente);
+                break;
                 case "KEY":
                     // Alla ricezione di questo messaggio (proveniente dal server) l'utente imposta la chiave fornita
                     Debug.Log("Recived SessionKey = " + Data);
-                    if(Me.SessionKey == null)
+                    if (Me.SessionKey == null)
                         Me.SessionKey = Data;
                     break;
                 case "HALOHA":
@@ -145,8 +209,11 @@ namespace Crypthat_Common
 
         //Metodi diversificati per client e server
         protected virtual void ElaboraMessaggio(Identity Mittente, Identity Destinatario, string Messaggio) { }
+        protected virtual void ElaboraMessaggioCifrato(Identity Mittente, Identity Destinatario, string Data) { }
         protected virtual void RegistraUtente(string Dati, object Source) { }
         protected virtual void UtenteDisconnesso(string Dati, object Source) { }
+        protected virtual void RegistraCriptoKey(string Dati, Identity Mittente) { }
+        protected virtual void AggiornaChiaviAsimmetriche(RSAContainer newContainer) { }
 
         //Metodi di ricerca delle Identity nella lista dei destinatari
         #region MetodiIdentity

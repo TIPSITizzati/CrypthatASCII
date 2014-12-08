@@ -17,8 +17,10 @@ namespace Crypthat_Common
      */
     public class Identity
     {
-        public string Name { get; set; } //Proprietà contenente il nome dichiarato dall'utente
-        public string SessionKey { get; set; } //Chiave generata random per identificare univocamente un utente (Può essere la chiave pubblica)
+        public string Name { get; set; } // Proprietà contenente il nome dichiarato dall'utente
+        public string SessionKey { get; set; } // Chiave generata random per identificare univocamente un utente (Può essere la chiave pubblica)
+        
+        public RSAContainer RSAContainer { get; set; }  // Chiavi per la cifratura generate
 
         #region Connessione
 

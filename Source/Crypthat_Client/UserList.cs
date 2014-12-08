@@ -17,7 +17,7 @@ namespace Crypthat_Client
         private GestoreLogicoClient gestoreClient;
         public Dictionary<Identity, ChatForm> chatAttive; // <Persona, Form>
 
-        public UserList(Identity Me, ModalitaOperativa opMode, object param)
+        public UserList(string Me, ModalitaOperativa opMode, object param)
         {
             InitializeComponent();
 
@@ -42,7 +42,7 @@ namespace Crypthat_Client
             gestoreClient.OnUtenteDisconnesso += gestoreClient_OnUtenteDisconnesso;
 
             lblUtenti.Text = "0 Utenti Connessi";
-            lblNomeUtente.Text = Me.Name;
+            lblNomeUtente.Text = Me;
         }
 
         void gestoreClient_OnUtenteDisconnesso(object sender, InterLevelArgs args)
@@ -79,7 +79,7 @@ namespace Crypthat_Client
                 if (gestoreClient.Destinatari.IndexOf(args.Subject) != 0)
                 {
                     lsUtenti.Items.Add(args.Subject.Name);
-                    lblUtenti.Text = String.Format("{0} Utenti Connessi", lsUtenti.Items.Count - 1);
+                    lblUtenti.Text = String.Format("{0} Utenti Connessi", lsUtenti.Items.Count);
                 }
             }));
         }

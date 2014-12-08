@@ -6,41 +6,44 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.Security.Cryptography;
 
+using System.Threading;
+
 namespace Crypthat_Common.Crittografia
 {
-    class RSACypher
+    public class RSACypher
     {
         // Metodo molto debole che usa poche cifre
-        public static BigInteger GenerateKeyPair(int Length)
+        public static RSAContainer GenerateKeyPair(int Length)
         {
+            Debug.Log("Generazione di una nuova coppia di chiavi asimmetriche...", Debug.LogType.WARNING);
             //Genera due numeri "primi" P, Q (Per motivi di tempo verranno utilizzati dei numeri completamente casuali)
             BigInteger p = GetProbablePrime(Length / 2);
-            Debug.Log(String.Format("Generated P : {0}", p.ToString()));
             BigInteger q = GetProbablePrime(Length / 2);
-            Debug.Log(String.Format("Generated Q : {0}", q.ToString()));
 
+            // Genera il modulo ed il phi(modulo)
             BigInteger n = p * q;
-            Debug.Log(String.Format("Generated N : {0}", n.ToString()));
             BigInteger v = (p - 1) * (q - 1);
-            Debug.Log(String.Format("Generated V : {0}", v.ToString()));
 
+            // Ottiene i valori della chiave pubblica(il numero dispari per cui mcd(e,v) = 1 ) e la chiave privata (l'inverso nel modulo tra e,v)
             BigInteger e = GetSmallOddInteger(v);
-            Debug.Log(String.Format("Generated E : {0}", e.ToString()));
-
             BigInteger d = ModularInverse(e, v);
-            Debug.Log(String.Format("Generated D : {0}", d.ToString()));
 
-            BigInteger M = new BigInteger(Encoding.Unicode.GetBytes(Console.ReadLine()));
-            Debug.Log(String.Format("Message is : {0}", M.ToString()));
+            // Ritorna i valori in un apposito container
+            RSAContainer Container = new RSAContainer();
+            Container.PrivateKey = String.Format("{0},{1}", e.ToString(), n.ToString());
+            Container.PublicKey = String.Format("{0},{1}", d.ToString(), n.ToString());
 
-            BigInteger C = BigInteger.ModPow(M, e, n);
-            Debug.Log(String.Format("Generated Chyper : {0}", C.ToString()));
+            return Container;
+        }
 
-            BigInteger BM = BigInteger.ModPow(C, d, n);
-            Debug.Log(String.Format("Original Message value is : {0}", BM.ToString()));
-            Debug.Log(String.Format("Original Message is : {0}", Encoding.Unicode.GetString(BM.ToByteArray())));
+        // Restituisce un array di byte sempre pari (Unicode usa 2 byte per carattere)
+        public static byte[] EncryptDecrypt(byte[] CypherText, string Key)
+        {
+            BigInteger C = new BigInteger(CypherText);
+            BigInteger D = BigInteger.Parse(Key.Split(',')[0]);
+            BigInteger N = BigInteger.Parse(Key.Split(',')[1]);
 
-            return 0;
+            return BigInteger.ModPow(C, D, N).ToByteArray();
         }
 
         // Ritorna un numero grande non divisibile per i primi 65000 numeri primi
@@ -160,6 +163,41 @@ namespace Crypthat_Common.Crittografia
             else
                 inv = u1;
             return inv;
+        }
+    
+        // Servizio in background che gestisce la generazione delle chiavi
+        public class RSACryptoService
+        {
+            public Thread RefreshThread;
+
+            public delegate void RSACallBack(RSAContainer newKeys);
+            public event RSACallBack NewKeyPair;
+
+            public void Start(int Timer)
+            {
+                this.RefreshThread = new Thread(() => ManageKeys(Timer));
+                this.RefreshThread.IsBackground = true;
+                this.RefreshThread.Start();
+            }
+
+            public void Stop()
+            {
+                if(this.RefreshThread.IsAlive)
+                {
+                    this.RefreshThread.Abort();
+                }
+            }
+
+            public void ManageKeys(int Timer)
+            {
+                while(true)
+                {
+                    DateTime nextAlarm = DateTime.Now.AddSeconds(Timer);
+                    while (DateTime.Now < nextAlarm) { }    //Attende che siano trascorsi i secondi richiesti
+                    if(NewKeyPair != null)
+                        NewKeyPair(GenerateKeyPair(512));
+                }
+            }
         }
     }
 }

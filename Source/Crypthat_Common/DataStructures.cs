@@ -26,6 +26,13 @@ namespace Crypthat_Common
         }
     }
 
+    // Contenitore delle informazioni riguardanti RSA
+    public class RSAContainer
+    {
+        public string PublicKey;    //D,N
+        public string PrivateKey;   //E,N
+    }
+
     // Delegate per la ricezione di un messaggio
     public delegate void MessaggioRicevuto(object sender, InterLevelArgs args);
 

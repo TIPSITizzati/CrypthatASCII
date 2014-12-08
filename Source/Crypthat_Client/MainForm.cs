@@ -68,18 +68,16 @@ namespace Crypthat_Client
                 MessageBox.Show("Indirizzo IP invalido!", "Errore");
                 return;
             }
-
-            Identity me = new Identity(txtNome.Text, null);
             
             UserList list = null;
             if(rbSockets.Checked)
             {
                 System.Net.IPEndPoint endPoint = new System.Net.IPEndPoint(address, (int)nPorta.Value);
-                list = new UserList(me, ModalitaOperativa.Sockets, endPoint);
+                list = new UserList(txtNome.Text, ModalitaOperativa.Sockets, endPoint);
             }
             else if(rbRs232.Checked)
             {
-                list = new UserList(me, ModalitaOperativa.Sockets, cbNomePorta.Text);
+                list = new UserList(txtNome.Text, ModalitaOperativa.Sockets, cbNomePorta.Text);
             }
             list.Show();
 
