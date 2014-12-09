@@ -1,0 +1,5 @@
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Common\bin\Release\Crypthat_Common.dll
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Common\bin\Release\Crypthat_Common.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Common\obj\Release\Crypthat_Common.dll
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Common\obj\Release\Crypthat_Common.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Common\obj\Release\Crypthat_Common.csprojResolveAssemblyReference.cache

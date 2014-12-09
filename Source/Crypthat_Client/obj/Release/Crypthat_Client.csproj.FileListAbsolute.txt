@@ -1,0 +1,13 @@
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\bin\Release\Crypthat_Client.exe.config
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\bin\Release\Crypthat_Client.exe
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\bin\Release\Crypthat_Client.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\bin\Release\Crypthat_Common.dll
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\bin\Release\Crypthat_Common.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.csprojResolveAssemblyReference.cache
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.MainForm.resources
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.Properties.Resources.resources
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.csproj.GenerateResource.Cache
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.exe
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.UserList.resources
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Client\obj\Release\Crypthat_Client.ChatForm.resources

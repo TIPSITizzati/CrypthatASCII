@@ -1,0 +1,8 @@
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\bin\Debug\Crypthat_Server.exe.config
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\bin\Debug\Crypthat_Server.exe
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\bin\Debug\Crypthat_Server.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\bin\Debug\Crypthat_Common.dll
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\bin\Debug\Crypthat_Common.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\obj\Debug\Crypthat_Server.exe
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\obj\Debug\Crypthat_Server.pdb
+C:\Users\Jacopo\Documents\GitHub\CrypthatASCII\Source\Crypthat_Server\obj\Debug\Crypthat_Server.csprojResolveAssemblyReference.cache
