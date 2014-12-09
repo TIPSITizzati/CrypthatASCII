@@ -21,7 +21,7 @@ namespace Crypthat_Common
         public List<Identity> Destinatari { get; set; } // Lista dei destinatari memorizzati
         protected ModalitaOperativa opMode; // Modalità in cui il programma funzionerà
         protected ConnectionInterface ConnectionManager; // Gestisce gli eventi comuni di tutte le interfacce di connessione (per ora Rs232 e Sockets)
-        protected RSACypher.RSACryptoService RSACryptoService;
+        protected RSACipher.RSACryptoService RSACryptoService;
 
         //Costruttore di default che inizializza il GestoreLogico con un Identità ignota (in attesa di un'Identità dal server)
         public GestoreLogico(ModalitaOperativa opMode)
@@ -29,10 +29,10 @@ namespace Crypthat_Common
             this.opMode = opMode;
             this.Destinatari = new List<Identity>(10);
             this.Me = new Identity(null, null);
-            this.RSACryptoService = new RSACypher.RSACryptoService();
+            this.RSACryptoService = new RSACipher.RSACryptoService();
 
             // Genera le chiavi RSA necessarie
-            this.Me.RSAContainer = RSACypher.GenerateKeyPair(512);
+            this.Me.RSAContainer = RSACipher.GenerateKeyPair(512);
             RSACryptoService.Start(30);
 
             switch (opMode)
@@ -99,9 +99,9 @@ namespace Crypthat_Common
                 ConnectionManager.InviaMessaggio(String.Format("MSG:{0}?{1};{2}", Me.SessionKey, Destinatario.SessionKey, Messaggio), Destinatario);
             else
             {
-                byte[][] AES_DATA = AESCypher.Encrypt(Messaggio);
-                string AES_KEY_RSA = Convert.ToBase64String(RSACypher.EncryptDecrypt(AES_DATA[0], Destinatario.RSAContainer.PublicKey));
-                string AES_IV_RSA = Convert.ToBase64String(RSACypher.EncryptDecrypt(AES_DATA[1], Destinatario.RSAContainer.PublicKey));
+                byte[][] AES_DATA = AESCipher.Encrypt(Messaggio);
+                string AES_KEY_RSA = Convert.ToBase64String(RSACipher.EncryptDecrypt(AES_DATA[0], Destinatario.RSAContainer.PublicKey));
+                string AES_IV_RSA = Convert.ToBase64String(RSACipher.EncryptDecrypt(AES_DATA[1], Destinatario.RSAContainer.PublicKey));
                 string AES_Messaggio = Convert.ToBase64String(AES_DATA[2]).Replace("<", "<\\");
                 string MessaggioCifrato = String.Format("CRYPT:{0}?{1};{2}<KEY>{3}<IV>{4}", Me.SessionKey, Destinatario.SessionKey, AES_Messaggio, AES_KEY_RSA, AES_IV_RSA);
 

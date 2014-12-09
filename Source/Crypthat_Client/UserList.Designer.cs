@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserList));
             this.lsUtenti = new System.Windows.Forms.ListBox();
             this.lblUtenti = new System.Windows.Forms.Label();
             this.barraStato = new System.Windows.Forms.StatusStrip();
@@ -77,6 +78,7 @@
             this.Controls.Add(this.barraStato);
             this.Controls.Add(this.lblUtenti);
             this.Controls.Add(this.lsUtenti);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "UserList";
             this.Text = "UserList";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserList_FormClosing);

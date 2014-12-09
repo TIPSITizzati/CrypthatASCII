@@ -12,7 +12,7 @@ namespace Crypthat_Common.Crittografia
     /* Classe per la crittografia simmetrica AES basata sulla documentazione Microsoft:
      * http://msdn.microsoft.com/it-it/library/system.security.cryptography.aes(v=vs.110).aspx
      */
-    public class AESCypher
+    public class AESCipher
     {
         public static byte[][] Encrypt(string Message)
         {

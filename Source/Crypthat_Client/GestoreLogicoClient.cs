@@ -111,14 +111,14 @@ namespace Crypthat_Client
             string[] Keys = Parts[1].Split(new string[] { "<IV>" }, StringSplitOptions.RemoveEmptyEntries);
             byte[] AES_Messaggio = Convert.FromBase64String(Parts[0].Replace("<\\", "<"));
 
-            byte[] AES_KEY = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[0]), Me.RSAContainer.PrivateKey);
-            byte[] AES_IV = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[1]), Me.RSAContainer.PrivateKey);
+            byte[] AES_KEY = RSACipher.EncryptDecrypt(Convert.FromBase64String(Keys[0]), Me.RSAContainer.PrivateKey);
+            byte[] AES_IV = RSACipher.EncryptDecrypt(Convert.FromBase64String(Keys[1]), Me.RSAContainer.PrivateKey);
             string Messaggio = "";
 
             try
             {
                 // Decifra il messaggio con la chiave simmetrica ottenuta
-                Messaggio = AESCypher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
+                Messaggio = AESCipher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
             }
             catch (Exception ex)
             {
@@ -152,7 +152,7 @@ namespace Crypthat_Client
             if (OnUtenteDisconnesso != null)
                 OnUtenteDisconnesso(this, new InterLevelArgs(utenteDisconnesso, index));
             else
-                throw new Exception("Evento di disconnession utente non impostato!");
+                throw new Exception("Evento di disconnessione utente non impostato!");
         }
 
         // Metodo chiamato allo scadere della coppia di chiavi RSA attuali

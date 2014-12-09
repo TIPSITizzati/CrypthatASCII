@@ -28,20 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.rbSockets = new System.Windows.Forms.RadioButton();
             this.rbRs232 = new System.Windows.Forms.RadioButton();
             this.gbOpMode = new System.Windows.Forms.GroupBox();
             this.gbInfoUtente = new System.Windows.Forms.GroupBox();
-            this.txtNome = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtNome = new System.Windows.Forms.TextBox();
             this.gbRs232 = new System.Windows.Forms.GroupBox();
-            this.gbSockets = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtIpAddress = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.nPorta = new System.Windows.Forms.NumericUpDown();
-            this.cbNomePorta = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.cbNomePorta = new System.Windows.Forms.ComboBox();
+            this.gbSockets = new System.Windows.Forms.GroupBox();
+            this.nPorta = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtIpAddress = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
             this.gbOpMode.SuspendLayout();
             this.gbInfoUtente.SuspendLayout();
@@ -99,14 +100,6 @@
             this.gbInfoUtente.TabStop = false;
             this.gbInfoUtente.Text = "Informazioni Utente";
             // 
-            // txtNome
-            // 
-            this.txtNome.Location = new System.Drawing.Point(57, 19);
-            this.txtNome.MaxLength = 18;
-            this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(272, 20);
-            this.txtNome.TabIndex = 0;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -115,6 +108,14 @@
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Nome";
+            // 
+            // txtNome
+            // 
+            this.txtNome.Location = new System.Drawing.Point(57, 19);
+            this.txtNome.MaxLength = 18;
+            this.txtNome.Name = "txtNome";
+            this.txtNome.Size = new System.Drawing.Size(272, 20);
+            this.txtNome.TabIndex = 0;
             // 
             // gbRs232
             // 
@@ -127,6 +128,23 @@
             this.gbRs232.TabIndex = 4;
             this.gbRs232.TabStop = false;
             this.gbRs232.Text = "Impostazioni Rs232";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Porta del server:";
+            // 
+            // cbNomePorta
+            // 
+            this.cbNomePorta.FormattingEnabled = true;
+            this.cbNomePorta.Location = new System.Drawing.Point(97, 17);
+            this.cbNomePorta.Name = "cbNomePorta";
+            this.cbNomePorta.Size = new System.Drawing.Size(232, 21);
+            this.cbNomePorta.TabIndex = 0;
             // 
             // gbSockets
             // 
@@ -142,21 +160,12 @@
             this.gbSockets.TabStop = false;
             this.gbSockets.Text = "Impostazioni Sockets";
             // 
-            // label2
+            // nPorta
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 20);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Indirizzo:";
-            // 
-            // txtIpAddress
-            // 
-            this.txtIpAddress.Location = new System.Drawing.Point(57, 17);
-            this.txtIpAddress.Name = "txtIpAddress";
-            this.txtIpAddress.Size = new System.Drawing.Size(148, 20);
-            this.txtIpAddress.TabIndex = 1;
+            this.nPorta.Location = new System.Drawing.Point(252, 17);
+            this.nPorta.Name = "nPorta";
+            this.nPorta.Size = new System.Drawing.Size(77, 20);
+            this.nPorta.TabIndex = 3;
             // 
             // label3
             // 
@@ -167,29 +176,21 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Porta:";
             // 
-            // nPorta
+            // txtIpAddress
             // 
-            this.nPorta.Location = new System.Drawing.Point(252, 17);
-            this.nPorta.Name = "nPorta";
-            this.nPorta.Size = new System.Drawing.Size(77, 20);
-            this.nPorta.TabIndex = 3;
+            this.txtIpAddress.Location = new System.Drawing.Point(57, 17);
+            this.txtIpAddress.Name = "txtIpAddress";
+            this.txtIpAddress.Size = new System.Drawing.Size(148, 20);
+            this.txtIpAddress.TabIndex = 1;
             // 
-            // cbNomePorta
+            // label2
             // 
-            this.cbNomePorta.FormattingEnabled = true;
-            this.cbNomePorta.Location = new System.Drawing.Point(97, 17);
-            this.cbNomePorta.Name = "cbNomePorta";
-            this.cbNomePorta.Size = new System.Drawing.Size(232, 21);
-            this.cbNomePorta.TabIndex = 0;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 20);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 13);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Porta del server:";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Indirizzo:";
             // 
             // btnConnect
             // 
@@ -212,6 +213,7 @@
             this.Controls.Add(this.gbSockets);
             this.Controls.Add(this.gbOpMode);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Crypthat - Connessione";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

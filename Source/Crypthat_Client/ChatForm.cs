@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Crypthat_Common;
+using Crypthat_Common.Crittografia;
 using System.Runtime.InteropServices;
 
 namespace Crypthat_Client
@@ -54,21 +55,38 @@ namespace Crypthat_Client
             InviaMessaggio();
         }
 
+        private void btnASCIIArt_Click(object sender, EventArgs e)
+        {
+            InviaMessaggio(true);
+        }
+
         private void ChatForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             parent.chatAttive.Remove(dest);
         }
 
-        private void InviaMessaggio()
+        private void InviaMessaggio(bool ASCII = false)
         {
             string Messaggio = txtSend.Text.Trim('\n', '\r', ' ');
             // Se si ha del testo da inviare
             if(!String.IsNullOrEmpty(Messaggio))
             {
-                // Invia il messaggio
-                gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
-                ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
-                txtSend.Clear();
+                if (!ASCII)
+                {
+                    // Invia il messaggio
+                    gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
+                    ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
+                    txtSend.Clear();
+                }
+                else
+                {
+                    Messaggio = "\n" + ASCIIArtCipher.GenerateASCIIArt(Messaggio, 12);
+
+                    // Invia il messaggio
+                    gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
+                    ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
+                    txtSend.Clear();
+                }
             }
         }
 

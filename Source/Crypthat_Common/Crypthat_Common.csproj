@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,13 +43,18 @@
   <ItemGroup>
     <Compile Include="Connessioni\Rs232Manager.cs" />
     <Compile Include="Connessioni\SocketManager.cs" />
-    <Compile Include="Crittografia\AESCypher.cs" />
+    <Compile Include="Crittografia\AESCipher.cs" />
+    <Compile Include="Crittografia\ASCIIArtCipher.cs" />
     <Compile Include="DataStructures.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="GestoreLogico.cs" />
     <Compile Include="Identity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Crittografia\RSACypher.cs" />
+    <Compile Include="Crittografia\RSACipher.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Icon.ico" />
+    <Content Include="Images\Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

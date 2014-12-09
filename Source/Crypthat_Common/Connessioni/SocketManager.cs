@@ -47,15 +47,17 @@ namespace Crypthat_Common.Connessioni
             
                 //Aspetta che la connessione sia avvenuta
                 tuttoPronto.WaitOne();
+
+                if(!Server.Sock.Connected)
+                    throw new Exception("Impossibile stabilire la connessione con il server!");
             }
 
             // Callback di avvenuta connessione per il client
             private void Connesso(IAsyncResult ar)
             {
+                Identity dest = (Identity)ar.AsyncState;
                 try
                 {
-                    Identity dest = (Identity)ar.AsyncState;
-
                     // Connessione conclusa
                     dest.Sock.EndConnect(ar);
 
@@ -68,6 +70,9 @@ namespace Crypthat_Common.Connessioni
                 catch (Exception e)
                 {
                     Debug.Log(e.ToString(), Debug.LogType.ERROR);
+                    
+                    // Sblocca il Thread principale
+                    tuttoPronto.Set();
                 }
             }
 

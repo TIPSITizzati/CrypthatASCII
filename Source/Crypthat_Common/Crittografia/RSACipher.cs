@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Crypthat_Common.Crittografia
 {
-    public class RSACypher
+    public class RSACipher
     {
         // Metodo molto debole che usa poche cifre
         public static RSAContainer GenerateKeyPair(int Length)

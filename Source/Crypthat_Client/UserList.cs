@@ -27,14 +27,23 @@ namespace Crypthat_Client
             // Inizializza la lista di chat attive
             chatAttive = new Dictionary<Identity, ChatForm>();
 
-            switch (opMode)
+            try
             {
-                case ModalitaOperativa.Rs232:
-                    gestoreClient = new GestoreLogicoClient(opMode, Me, (string)param);
-                    break;
-                case ModalitaOperativa.Sockets:
-                    gestoreClient = new GestoreLogicoClient(opMode, Me, (System.Net.IPEndPoint)param);
-                    break;
+                switch (opMode)
+                {
+                    case ModalitaOperativa.Rs232:
+                        gestoreClient = new GestoreLogicoClient(opMode, Me, (string)param);
+                        break;
+                    case ModalitaOperativa.Sockets:
+                        gestoreClient = new GestoreLogicoClient(opMode, Me, (System.Net.IPEndPoint)param);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Si è verificato un errore in fase di connessione.\n" + ex.Message, "Errore");
+                Application.Exit();
+                return;
             }
 
             gestoreClient.OnMessaggioRicevuto += gestoreClient_OnMessaggioRicevuto;
