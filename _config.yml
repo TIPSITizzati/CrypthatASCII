@@ -1,0 +1,110 @@
+### GENERAL SETTINGS ###
+
+# Site settings
+title: CRYPTHAT
+description: "Crypthat è un progetto scolastico che ha come scopo la creazione di un chat che sfrutti i più comuni algoritmi crittografici per garantire la sicurezza dei messaggi."
+analytics: #Google analytics code in the format XX-nnnnnnnn-n
+baseurl: "" #important: start with /
+url: "http://tipsitizzati.github.io/CrypthatASCII/"
+
+# Build settings
+markdown: kramdown
+permalink: /:categories/:title
+excerpt_separator: <!--more--> #use this in posts to define how long the excerpt of the post (that is shown on the Blog page) is
+
+colors:  #in hex code if not noted else
+  primary: "#00b3fe" #"#F70031" 
+  primary_rgb: "0,179,254" #"247,0,49" #rgb of the primary. Needed in some places for the transparency effect.  
+  secondary: "#384452" #"#33004D"
+  link: "#428bca"
+  link_hover: "#01b2fe"
+  footer_heading: "#ffffff"
+  footer_content: "#bfc9d3"
+  
+  
+### CONTACT SETTINGS ###
+
+# Social networks usernames. Many more available: google-plus, flickr, linkedin, etc). Shown in footer.
+social:
+  - title: dribbble
+    url:
+  - title: facebook
+    url:
+  - title: twitter
+    url: 
+  - title: instagram
+    url: 
+  - title: tumblr
+    url: 
+    
+# Postal address (add as many lines as necessary). Shown in footer and on Contact page.
+address:
+  - lines: 
+    - ISII Marconi, via IV Novembre,
+    - 229122, Piacenza,
+    - Italy.
+email: none
+tel: none
+
+
+### GENERAL DATA FOR VARIOUS LOCATIONS ###
+    
+# Members information. Shown on About page.
+members:
+  - name: Libè Jacopo
+    position: PM e Programmazione
+    text: Sviluppatore delle classi logiche e delle classi di crittografia
+    img: team01.jpg
+    social:
+      - title: envelope #use for email address
+        url: mailto:jacopo.libe@gmail.com
+      - title: twitter
+        url: http://twitter.com/xartumx
+  - name: Guglielmetti Kevin
+    position: Documentazione Tecnica
+    text: Elaboratore di tutti i documenti riguardandi algoritmi e tecnologie utilizzate nel progetto.
+    img: team02.jpg
+    social:
+      - title: envelope #use for email address
+        url: mailto:name@domain.com
+  - name: Cippelletti Alberto
+    position: Designer
+    text: Sviluppatore dell'interfaccia grafica di Crypthat
+    img: team03.jpg
+    social:
+      - title: envelope #use for email address
+        url: mailto:name@domain.com
+  - name: Arcelli Bruno
+    position: Documentazione di Progetto
+    text: Mantenitore dei documenti di progetto
+    img: team04.jpg
+    social:
+      - title: envelope #use for email address
+        url: mailto:name@domain.com
+  - name: Iazzetta Giovanni
+    position: Documentazione di Progetto
+    text: Mantenitore dei documenti di progetto
+    img: team04.jpg
+    social:
+      - title: envelope #use for email address
+        url: mailto:name@domain.com
+    
+# Clients information. Shown on Home and About pages.
+clients:
+  - name: dribbble
+    img: client01.png
+  - name: Code is Poetry
+    img: client02.png
+  - name: Vimeo
+    img: client03.png
+  - name: VimeoPro
+    img: client04.png
+    
+# Short text about your company. Shown in footer on every page and also separately on Home and Contact page.
+about: "Il gruppo è stato formato per una serie di progetti scolastici di cui Crypthat è il primo. Sebbene le disuguaglianze interne cerca costantemente di rendere al meglio rispettando tempi e consegne."
+
+# Testimonial content. Shown on Home and About page. 
+testimonial:
+    message: "Questo è da cambiare con qualcosa"
+    author: Test
+    position: CEO
