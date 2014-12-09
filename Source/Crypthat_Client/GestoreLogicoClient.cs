@@ -113,9 +113,17 @@ namespace Crypthat_Client
 
             byte[] AES_KEY = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[0]), Me.RSAContainer.PrivateKey);
             byte[] AES_IV = RSACypher.EncryptDecrypt(Convert.FromBase64String(Keys[1]), Me.RSAContainer.PrivateKey);
+            string Messaggio = "";
 
-            // Decifra il messaggio con la chiave simmetrica ottenuta
-            string Messaggio = AESCypher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
+            try
+            {
+                // Decifra il messaggio con la chiave simmetrica ottenuta
+                Messaggio = AESCypher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Errore nella ricezione di un messaggio cifrato!\n" + ex.Message, Debug.LogType.ERROR);
+            }
 
             // Richiama l'evento di ricezione di un messaggio (Per la parte grafica)
             if (OnMessaggioRicevuto != null)

@@ -16,6 +16,7 @@ namespace Crypthat_Server
             {
                 //Ciclo infinito per mantenere il server in ascolto
             }
+            Console.ReadKey();
         }
     }
 }

@@ -30,8 +30,8 @@ namespace Crypthat_Common.Crittografia
 
             // Ritorna i valori in un apposito container
             RSAContainer Container = new RSAContainer();
-            Container.PrivateKey = String.Format("{0},{1}", e.ToString(), n.ToString());
-            Container.PublicKey = String.Format("{0},{1}", d.ToString(), n.ToString());
+            Container.PrivateKey = String.Format("{0},{1}", d.ToString(), n.ToString());
+            Container.PublicKey = String.Format("{0},{1}", e.ToString(), n.ToString());
 
             return Container;
         }

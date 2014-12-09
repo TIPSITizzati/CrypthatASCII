@@ -61,12 +61,13 @@ namespace Crypthat_Client
 
         private void InviaMessaggio()
         {
+            string Messaggio = txtSend.Text.Trim('\n', '\r', ' ');
             // Se si ha del testo da inviare
-            if(!String.IsNullOrEmpty(txtSend.Text.Replace("\n", "")))
+            if(!String.IsNullOrEmpty(Messaggio))
             {
                 // Invia il messaggio
-                gestoreClient.InviaMessaggio(txtSend.Text, dest, chkEncrypt.Checked);
-                ScriviMessaggio(txtSend.Text, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
+                gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
+                ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
                 txtSend.Clear();
             }
         }
