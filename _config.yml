@@ -4,8 +4,8 @@
 title: CRYPTHAT
 description: "Crypthat è un progetto scolastico che ha come scopo la creazione di un chat che sfrutti i più comuni algoritmi crittografici per garantire la sicurezza dei messaggi."
 analytics: #Google analytics code in the format XX-nnnnnnnn-n
-baseurl: "CrypthatASCII/" #important: start with /
-url: "http://tipsitizzati.github.io/CrypthatASCII/"
+baseurl: "CrypthatASCII" #important: start with /
+url: "http://tipsitizzati.github.io/"
 
 # Build settings
 markdown: kramdown
