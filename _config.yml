@@ -4,8 +4,8 @@
 title: CRYPTHAT
 description: "Crypthat è un progetto scolastico che ha come scopo la creazione di un chat che sfrutti i più comuni algoritmi crittografici per garantire la sicurezza dei messaggi."
 analytics: #Google analytics code in the format XX-nnnnnnnn-n
-baseurl: "CrypthatASCII" #important: start with /
-url: "tipsitizzati.github.io"
+baseurl: "" #important: start with /
+url: ""
 
 # Build settings
 markdown: kramdown
@@ -63,10 +63,10 @@ members:
   - name: Guglielmetti Kevin
     position: Documentazione Tecnica
     text: Elaboratore di tutti i documenti riguardandi algoritmi e tecnologie utilizzate nel progetto.
-    img: team02.jpg
+    img: k_guglielmetti.jpg
     social:
       - title: envelope #use for email address
-        url: mailto:name@domain.com
+        url: mailto:kevin.guglie@gmail.com
   - name: Cippelletti Alberto
     position: Designer
     text: Sviluppatore dell'interfaccia grafica di Crypthat
@@ -77,7 +77,7 @@ members:
   - name: Arcelli Bruno
     position: Documentazione di Progetto
     text: Mantenitore dei documenti di progetto
-    img: team04.jpg
+    img: b_arcelli.jpg
     social:
       - title: envelope #use for email address
         url: mailto:name@domain.com

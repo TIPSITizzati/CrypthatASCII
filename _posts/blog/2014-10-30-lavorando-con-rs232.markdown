@@ -1,0 +1,58 @@
+---
+layout: post          #important: don't change this
+title: "Lavorando con Rs232"
+date: 2014-10-30 22:10:58
+author: Kevin Guglielmetti
+categories:
+- blog                #important: leave this here
+- Connessioni
+img: rs232.jpg       #place image (850x450) with this name in /assets/img/blog/
+thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+---
+Per verificare il corretto funzionamento del codice si è implementato lo standard di comunicazione seriale RS232c: ciò significa che i bit di informazione verranno inviati uno alla volta attraverso una connessione seriale implementata attraverso i cavi DB9.<br>
+
+<!--more-->
+<center><h3> Concetti Generali </h3></center>
+<p>
+	I numero 9 sta a indicare il numero di pin presenti nella parte finale del cavo; i pin sono collegati a fili di rame presenti nel corpo del cavo, ognuno dei quali ha una specifica funzione: trasmissione, ricezione, massa, handshake (protocollo di sincronia che garantisce che i dati trasmessi non vadano persi), ecc.
+</p>
+<p>
+	Lo standard RS232c si basa sulla comunicazione asincrona, cioè trasmettitore e ricevitore non sono sincronizzati durante la trasmissione/ricezione. Ogni carattere inviato è codificato con un certo numero di bit a seconda della codifica utilizzata.
+</p>
+<p>Ogni serie di bit è preceduta da un bit di start e seguita da uno o più bit di stop e uno di parità (controllo di errore).</p>
+<p>Ovviamente la comunicazione può essere attuata solo se si dispone di una porta seriale sul pc oppure si possono utilizzare programmi di virtualizzazione come Com0com.</p>
+
+<p>
+	<b>Esistono inoltre dei parametri che permettono di gestire la connessione quali:</b>
+	<ul>
+		<li>Nome della porta (PortName)
+		<li>Numero di bit per secondo (BaudRate)
+		<li>Numero di bit che codificano il singolo carattere (DataBits)
+		<li>Tipo di parità (Parity)
+		<li>Valore del bit di stop (StopBits)
+	</ul>
+</p>
+<br><br><br>
+
+<center><h3> Esempio C# </h3></center>
+<p>
+	<script src="https://gist.github.com/artumino/30ca0c1bd2f3b45166da.js"></script><br>
+	<p>Il codice incluso indica come l'inizializzazione delle porte Rs232 è gestita in Crypthat.</p>
+	<p>Il metodo utilizzato è infatti "IniziallizzaPorta" dove viene specificato a che persona (Identity) attribuire un porta Rs232.</p>
+	<p>Come prima cosa si inizializza la proprietà Identity.serialPort ad un nuovo oggetto SerialPort con il nome specificato nei parametri del metodo.</p>
+	<p>Seguono poi i settaggi dei parametri della porta, in questo caso sono stati utilizzati:</p>
+		<ul>
+			<li>Velocità di 9600bps, questo perchè il cavo utilizzato presentava un forte deterioramento e velocità superiori avrebbero probabilmente causato perdita di dati.
+			<li>8 bit per codificare i caratteri, per includere anche i caratteri speciali ASCII.
+			<li>Controllo di Parità in modalità Pari, per garantire un minimo controllo sugli errori di trasmissione.
+			<li>1 StopBit
+		</ul>
+</p>
+<br>
+<center><h3> Considerazioni Finali </h3></center>
+<p>
+	Durante lo sviluppo della classe di gestione di Rs232 abbiamo riscontrato un problema inaspettato che ha ritardato il progetto.<br>
+	Crypthat, infatti, utilizza la porta Rs232 ad eventi, ovvero ogni volta che un dato viene ricevuto, viene chiamato l'evento Data_Received della porta che restituisce la porta Rs232 di origine ed i dati letti (presenti nel buffer di ricezione). Nella fase di testing, però, il gruppo ha scoperto che l'evento veniva chiamato alla ricezione di un certo numero di bit, non necessariamente alla fine del messaggio.<br>
+	E' stato quindi necessario modificare i metodi di comunicazione, inserendo alla fine di ogni messaggio un carattere di escape (nel nostro caso ~) ed in ricezzione usando il metodo dell'oggetto SerialPort, "ReadTo(char carattere)" che legge il buffer corrente fino ad un determinato carattere e cancella solo i byte letti.<br>
+	<script src="https://gist.github.com/artumino/c6d2511c180c4faeb5fc.js"></script><br>
+</p>

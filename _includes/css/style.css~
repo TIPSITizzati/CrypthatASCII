@@ -475,11 +475,7 @@ a.anchor{
 }
 
 /*    Personalizzato 	*/
-.font-monoton {
-    font-family: Monoton-Regular;
-}
-
 @font-face {
     font-family: Monoton;
-    src: url("{{ "/assets/fonts/Monoton-Regular.ttf" | prepend: site.baseurl }}");
+    src: url(assets/fonts/Monoton-Regular.ttf);
 }

@@ -3,7 +3,9 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
                 <h3>Comunica in sicurezza con i tuoi amici</h3>
-                <p style="font-family: Monoton; font-size: 38pt; color: #ffffff;">CRYPTHAT ASCII EDITION</p>			
+                <p style="font-family: Monoton; font-size: 38pt; color: #ffffff;">CRYPTHAT ASCII EDITION</p>
+                <h5></h5>
+                <h5></h5>				
             </div>
             <div class="col-lg-8 col-lg-offset-2 himg">
                 <img src="{{ "/assets/img/Crypthat-Header.png" | prepend: site.baseurl }}" class="img-responsive">
