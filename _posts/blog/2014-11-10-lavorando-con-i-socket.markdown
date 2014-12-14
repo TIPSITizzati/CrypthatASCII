@@ -6,8 +6,8 @@ author: Kevin Guglielmetti
 categories:
 - blog                #important: leave this here
 - Connessioni
-img: rs232.jpg       #place image (850x450) with this name in /assets/img/blog/
-thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+img: ethernet.jpg       #place image (850x450) with this name in /assets/img/blog/
+thumb: ethernet.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
 <p>Un altro metodo per il trasferimento di dati attraverso una rete è utilizzare i socket: questi permettono a due applicazioni(anche di macchine separate) di scambiarsi dei dati.</p>
@@ -99,6 +99,25 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 <br>
 <h4>Invio/Ricezione di Dati</h4><br>
 <script src="https://gist.github.com/artumino/458d498aca27dd6ef9fb.js"></script>
+<p>
+	L'invio e la ricezione dei dati è effetuata sempre a connessione stabilita ed è similare come funzionamento alle parti descritte prima.<br>
+	I metodi <b>BeginSend</b> e <b>BeginReceive</b> si sono rivelati semplici da implementare perchè utilizzano la stessa tecnica a <i>CallBack</i>. Nel progetto quindi sono stati gestiti come gli eventi di Rs232.<br>
+	Durante l'invio viene apposto alla fine del messaggio un tag personalizzato <b>&lt;eof&gt;</b> che indica la fine di ogni messaggio e per proteggere questo tag di escape ogni &lt; del messaggio originale viene convertito in &lt;/ evitando così combinazioni che permetterebbero un exploit della comunicazione.<br>
+	Analogamente in fase di ricezione si continuano a riceveri i dati fino al tag &lt;eof&gt;(<i>End of File</i>). Una volta ricevuto un messaggio intero, si risostituiscono tutti i &lt;/ con &lt;.<br>
+</p><br>
+<br>
+<center><h3>Annotazioni</h3></center>
+<p>
+	Durante lo scambio delle chiavi di crittografia, il gruppo ha scoperto un grave problema nell'<b>Encoding</b> delle stringe. Trasferendo un Array di bytes, infatti, effettuando una veloce conversione di questo a stringa, interviene la classe Encoding (di default <i>ASCII</i>) che però non utilizza 8bit alla volta ma bensì 7bit. Così facendo viene alterato il valore della chiave generando problemi.<br>
+	Analogamente <i>Unicode</i> ha generato problemi simili utilizzando 2Byte per carattere.<br>
+	La soluzione trovata per mantenere invariato il valore dell'array di byte è stato quello di adoperare una <b>stringa Base64</b> che, evitando l'Encoding, è in grado di mantenere invariato l'array di byte.<br>
+	<b>Base64</b> infatti divide l'array di partenza in gruppi da 6bit (da cui derivano i 64 possibili caratteri) che poi ricompone in gruppi da 8bit identici a quelli di partenza.<br>
+	Ed esempio un array di byte che rappresenta la parola "<i>Test</i>" in ASCII, risulterà "<i>VGVzdA==</i>" in Base64.<br>
+	<br>
+	Un altro problema riscontrato in fase di test è stato l'<b>alto numero di eccezioni possibili</b> generate dall'utilizzo di un componente come i Socket.<br>
+	Per questo per ogni metodo sono state previste situazioni di errore critici (disconnessione forzate dal server, etc.) oppure semplici avvisi (Errori nel parsing di messaggi, etc.) accerchiando tutti i metodi da <b>try</b> e <b>catch</b>.<br>
+	Questo approccio si è rivelato efficacie per la gestione degli errori di connettività ma ha complicato il debug dei livelli più alti del progetto (classi logiche).<br>
+</p>
 <!--Annotazioni:
 -Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
 
