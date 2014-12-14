@@ -89,22 +89,5 @@ members:
       - title: envelope #use for email address
         url: mailto:name@domain.com
     
-# Clients information. Shown on Home and About pages.
-clients:
-  - name: dribbble
-    img: client01.png
-  - name: Code is Poetry
-    img: client02.png
-  - name: Vimeo
-    img: client03.png
-  - name: VimeoPro
-    img: client04.png
-    
 # Short text about your company. Shown in footer on every page and also separately on Home and Contact page.
 about: "Il gruppo è stato formato per una serie di progetti scolastici di cui Crypthat è il primo. Sebbene le disuguaglianze interne cerca costantemente di rendere al meglio rispettando tempi e consegne previste."
-
-# Testimonial content. Shown on Home and About page. 
-testimonial:
-    message: "Questo è da cambiare con qualcosa"
-    author: Test
-    position: CEO
