@@ -98,7 +98,7 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 <p>Per permettere la ricezione dei dati è stato creato un metodo che è in comune con quello del server chiamato <b>RiceviMessaggio</b>.</p>
 <br>
 <h4>Invio/Ricezione di Dati</h4><br>
-
+<script src="https://gist.github.com/artumino/458d498aca27dd6ef9fb.js"></script>
 <!--Annotazioni:
 -Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
 

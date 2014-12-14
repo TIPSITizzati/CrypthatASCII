@@ -16,7 +16,7 @@ permalink: /blog/
                     <img class="img-responsive" src="{{ "/assets/img/blog/" | prepend: site.baseurl }}{{ post.img }}">
                 </a>    
                 <a href="{{ post.url | prepend: site.baseurl }}"><h3 class="ctitle">{{ post.title }}</h3></a>
-                <p><csmall>{{ post.date | Data: "%b %-d, %Y" }}. | Da: {{ post.author }}</csmall></p>
+                <p><csmall>{{ post.date | date: "%b %-d, %Y" }}. | Da: {{ post.author }}</csmall></p>
                 {{ post.excerpt }}
                 <p><a href="{{ post.url | prepend: site.baseurl }}">[Continua a Leggere]</a></p>
                 <div class="hline"></div>

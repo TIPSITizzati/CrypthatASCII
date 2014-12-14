@@ -38,7 +38,7 @@ Per verificare il corretto funzionamento del codice si è implementato lo standa
 <p>
 	<script src="https://gist.github.com/artumino/30ca0c1bd2f3b45166da.js"></script><br>
 	<p>Il codice incluso indica come l'inizializzazione delle porte Rs232 è gestita in Crypthat.</p>
-	<p>Il metodo utilizzato è infatti "IniziallizzaPorta" dove viene specificato a che persona (Identity) attribuire un porta Rs232.</p>
+	<p>Il metodo utilizzato è infatti "InizializzaPorta" dove viene specificato a che persona (Identity) attribuire un porta Rs232.</p>
 	<p>Come prima cosa si inizializza la proprietà Identity.serialPort ad un nuovo oggetto SerialPort con il nome specificato nei parametri del metodo.</p>
 	<p>Seguono poi i settaggi dei parametri della porta, in questo caso sono stati utilizzati:</p>
 		<ul>
@@ -54,5 +54,5 @@ Per verificare il corretto funzionamento del codice si è implementato lo standa
 	Durante lo sviluppo della classe di gestione di Rs232 abbiamo riscontrato un problema inaspettato che ha ritardato il progetto.<br>
 	Crypthat, infatti, utilizza la porta Rs232 ad eventi, ovvero ogni volta che un dato viene ricevuto, viene chiamato l'evento Data_Received della porta che restituisce la porta Rs232 di origine ed i dati letti (presenti nel buffer di ricezione). Nella fase di testing, però, il gruppo ha scoperto che l'evento veniva chiamato alla ricezione di un certo numero di bit, non necessariamente alla fine del messaggio.<br>
 	E' stato quindi necessario modificare i metodi di comunicazione, inserendo alla fine di ogni messaggio un carattere di escape (nel nostro caso ~) ed in ricezzione usando il metodo dell'oggetto SerialPort, "ReadTo(char carattere)" che legge il buffer corrente fino ad un determinato carattere e cancella solo i byte letti.<br>
-	<script src="https://gist.github.com/artumino/c6d2511c180c4faeb5fc.js"></script><br>
 </p>
+<script src="https://gist.github.com/artumino/c6d2511c180c4faeb5fc.js"></script><br>
