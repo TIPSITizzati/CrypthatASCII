@@ -49,6 +49,8 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 	</ul>
 </p>
 <br>
+<p>Il processo di comunicazione tramite socket, dettagliato maggiormente nella nostra implementazione C#, è riassumibile in breve da questa immagine:	</p>
+<img class="img-responsive" src="{{ "/assets/img/posts/processo-sockets.gif" | prepend: site.baseurl }}" alt="">
 <br>
 
 <center><h3> Esempio C# </h3></center>
@@ -58,13 +60,44 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 	Nel progetto questi metodi sono implementati in un unica classe che viene utilizzata sia dal Server che dal Client chiamata <b>SocketManager</b>.<br>
 </p>
 <br>
+<h4>Premessa</h4><br>
 <script src="https://gist.github.com/artumino/f04441fa7c5001d1503b.js"></script><br>
 <p>
 	Prima di iniziare occore specificare che <b>StateObject</b> è una classe che, come suggerito dalla documentazione ufficiale Microsoft, verrà utilizzata per memorizzare i dati in arrivo da un Socket temporaneamente.<br> 
-	Questo perchè, a differenza dell'<br>Rs232</b> che presenta dei <b>buffer dati permanenti</b> in ricezione ed invio, i <b>Socket</b> una volta ricevuti i dati in memoria, se non salvati in un opportuno buffer, <b>vengono cancellati</b>.
+	Questo perchè, a differenza dell'<b>Rs232</b> che presenta dei <b>buffer dati permanenti</b> in ricezione ed invio, i <b>Socket</b> una volta ricevuti i dati in memoria, se non salvati in un opportuno buffer, <b>vengono cancellati</b>.
 </p>
-
-
+<h4>Ascolto ed Accettazione delle Connessioni (Server)</h4>
+<p>
+	Sebbene in Crypthat la classe di gestione dei socket sia unica, alcuni metodi differiscono tra client e server.<br>
+	Secondo la logica client/server, infatti, il server deve rimanere in ascolto ad un determinato <i>EndPoint</i> per iniziare la comunicazione con un qualsiasi client che vi si connette.<br>
+	Il codice utilizzato dal server per mettersi in ascolto (in maniera Asincrona, quindi senza bloccare il processo principale) è il seguente:<br>
+</p>
+<script src="https://gist.github.com/artumino/534454b0ece25ab7108d.js"></script><br>
+<p>
+	Il metodo <i>Ascolta</i> crea un EndPoint (<i>IPAddress.Any</i>:11000) su cui il server si mette in ascolto tramite il metodo <b>BeginAccept</b>.<br>
+	Il valore <b>IPAddress.Any</b> indica l'indirizzo IP 0.0.0.0 che permette di ascoltare su tutti gli indirizzi IP di tutte le interfacce della macchina su cui è in esecuzione il codice.<br>
+	Le istrunzioni <b>Socket.Bind</b> e <b>Socket.Listen</b> sono utilizzate per legare l'oggetto Socket ad un determinato EndPoint (nel nostro caso a <i>localEP</i>) e iniziare l'ascolto di connessioni in arrivo.<br>
+	All'istrunzione <i>Listen</i> viene inoltre specificata la grandezza massima della coda delle connessioni in ingresso in attesa di accettazione.<br>
+	Al metodo <i>BeginAccept</i>, che inizia l'accettazione di una connessione in coda, è passato un <i>CallBack</i> ovvero un metodo che verrà chiamato in caso di avvenuta accettazione ed a cui verranno passati i parametri specificati, nel nostro caso il <b>Socket</b> "<i>listener</i>" da cui proviene il collegamento.<br>
+</p>
+<script src="https://gist.github.com/artumino/d5cfda54719e847efd63.js"></script>
+<p>
+	Il <i>CallBack</i> ConnessioneAccettata è un metodo chiamato all'accettazione di una connessione a cui vengono passati i parametri relativi al risultato dell'operazione tramite un <i>Interfaccia</i> chiamata <b>IAsyncResult</b>.<br>
+	Da questo parametro si può ricavare il socket di provenienza della richiesta (inviato come parametro del metodo <b>BeginAccept</b>). Il metodo <b>EndAccept</b>, che può essere chiamato soltato all'interno del CallBack, viene poi utilizzato per ricevere il Socket con cui si potrà comunicare con il client richiedente.<br>
+	Per ogni client connesso al server, infatti, vi saranno N Sockets aperti su N porte diverse, oltre a quello utilizzato dal server (0.0.0.0:11000) per l'accettazione delle connessioni.<br>
+	Come si può notare dal codice, ad ogni nuova connessione viene assegnato uno <i>StateObject</i> (descritto in precedenza) utilizzato per memorizzare i dati in arrivo da un determinato client.<br>
+	Tramite il metodo <b>BeginReceive</b> si inizia ad attendere il flusso di dati (<b>Stream</b>) proveniente dal client. Come per <i>BeginAcept</i>, BeginReceive ha un suo CallBack chiamato alla ricezione di dati.<br>
+</p>
+<br>
+<p>Nel codice è inoltre utilizzato un Semaforo (<b>tuttoPronto</b>) per la gestione delle accettazioni di connessioni.</p><br>
+<br>
+<h4>Connessione al Server (Client)</h4><br>
+<p>Analogamente al Server, il client utilizza il metodo asincrono <b>BeginConnect</b> ed il corrispondente CallBack <b>Conneso</b> per l'instaurazione di una connessione con il server.</p>
+<script src="https://gist.github.com/artumino/1dcada56ba3c6c2d0257.js"></script><br>
+<p>L'unica cosa che è necessario precisare è che, una volta connesso, il client non inizia subito ad ascoltare per l'eventuale ricezione di dati.</p>
+<p>Per permettere la ricezione dei dati è stato creato un metodo che è in comune con quello del server chiamato <b>RiceviMessaggio</b>.</p>
+<br>
+<h4>Invio/Ricezione di Dati</h4><br>
 <!--Annotazioni:
 -Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
 
