@@ -16,10 +16,10 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 
 <!--more-->
 <p>
-	Il concetto di sviluppo per "<i>Punti di Incontro</i>" è stato adottato basandosi sul funzionamento della pila ISO/OSI dove ogni strato comunica con gli adiacenti tramite dei <b>SAP</b>(<i>Service Access Point</i>) che permettono la libertà totale all'interno di ogni livello di astrazione ma allo stesso tempo garantiscono la funzionalità definendo, nel caso di Crypthat, metodi o eventi di accesso tra diversi livelli.<br>
+	Il concetto di sviluppo per "<i>Punti di Incontro</i>" è stato adottato basandosi sul funzionamento della pila ISO/OSI dove ogni strato comunica con quelli adiacenti tramite dei <b>SAP</b>(<i>Service Access Point</i>) che permettono la libertà totale all'interno di ogni livello di astrazione ma allo stesso tempo garantiscono la funzionalità definendo, nel caso di Crypthat, metodi o eventi di accesso tra diversi livelli.<br>
 </p><br>
 <p>La struttura di Crypthat adoperata è visibile nella seguente immagine:</p>
-
+<img class="img-responsive" src="{{ "/assets/img/posts/Struttura-Crypthat.png" | prepend: site.baseurl }}" alt="">
 <p>
 	
 </p>
