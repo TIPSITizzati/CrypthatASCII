@@ -28,6 +28,8 @@ thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/
 	<br>	
 	Una volta avviato "<i>jekyll serve</i>" vengono costruite le pagine inserendo headers, footers, stili, javascripts.<br>
 	Guardando sulla documentazione presente sul sito di Jekyll è possibile scoprire di più anche sulla sintassi dei cicli, etc.<br>
+	<br>
+	Jekyll da quindi la possibilità di creare un sito modulare, senza l'uso di php ed è inoltre molto semplice da sincronizzare tra più persone in quanto ogni parte del sito risulta essere divisa in piccoli sottomoduli che diminuiscono le possibilità di conflitto con gli altri utenti.<br>
 </p>
 <center><h3>Ventaggi</h3></center>
 <p>

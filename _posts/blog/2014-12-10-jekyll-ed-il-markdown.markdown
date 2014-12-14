@@ -31,7 +31,7 @@ thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/
 	<br>
 	Jekyll da quindi la possibilità di creare un sito modulare, senza l'uso di php ed è inoltre molto semplice da sincronizzare tra più persone in quanto ogni parte del sito risulta essere divisa in piccoli sottomoduli che diminuiscono le possibilità di conflitto con gli altri utenti.<br>
 </p>
-<center><h3>Ventaggi</h3></center>
+<center><h3>Vantaggi</h3></center>
 <p>
 	Il lato positivo di Jekyll è che non impegna risorse come un Database combinato a php5 e Joomla o Wordpress. Così facendo si ha un sito sicuro (non avendo componenti dinamici) e con basso consumo di risorse. Esportabile su qualsiasi servizio di hosting.<br>
 </p>
