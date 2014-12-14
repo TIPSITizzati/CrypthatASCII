@@ -9,10 +9,10 @@ categories:
 img: rs232.jpg       #place image (850x450) with this name in /assets/img/blog/
 thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
+<center><h3> Concetti Generali </h3></center>
 Per verificare il corretto funzionamento del codice si è implementato lo standard di comunicazione seriale RS232c: ciò significa che i bit di informazione verranno inviati uno alla volta attraverso una connessione seriale implementata attraverso i cavi DB9.<br>
 
 <!--more-->
-<center><h3> Concetti Generali </h3></center>
 <p>
 	I numero 9 sta a indicare il numero di pin presenti nella parte finale del cavo; i pin sono collegati a fili di rame presenti nel corpo del cavo, ognuno dei quali ha una specifica funzione: trasmissione, ricezione, massa, handshake (protocollo di sincronia che garantisce che i dati trasmessi non vadano persi), ecc.
 </p>

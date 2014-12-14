@@ -1,0 +1,71 @@
+---
+layout: post          #important: don't change this
+title: "Lavorando con i Socket"
+date: 2014-11-10 18:34:15
+author: Kevin Guglielmetti
+categories:
+- blog                #important: leave this here
+- Connessioni
+img: rs232.jpg       #place image (850x450) with this name in /assets/img/blog/
+thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+---
+<center><h3> Concetti Generali </h3></center>
+<p>Un altro metodo per il trasferimento di dati attraverso una rete è utilizzare i socket: questi permettono a due applicazioni(anche di macchine separate) di scambiarsi dei dati.</p>
+
+<!--more-->
+<p>Un socket rappresenta un punto di connessione per una comunicazione ed è identificato da: famiglia del protocollo, indirizzo IP e numero di porta. Una porta è un valore numerico specificato su 2 byte (da 0 a 65535) che identifica un particolare canale utilizzabile per la comunicazione.</p>
+
+<p>Le porte da 0 a 1023 sono le cosiddette "well-knownports" e sono riservate per l' offerta di servizi(http, dns, ftp, ecc.).</p>
+<p>L' indirizzo IP definisce il calcolatore su cui risiede il processo, mentre il numero di porta identifica il processo destinatario.</p>
+<p>Per la comunicazione dovranno essere creati due socket, uno locale e uno di destinazione così strutturati:
+	<ol>	
+		<li>Indirizzo <b>IP locale: Numero porta locale</b>
+		<li>Indirizzo <b>IP destinatario: Numero porta destinatario</b>
+	</ol>
+</p>
+<br>
+
+<p>In c# per poter utilizzare i socket occorre aggiungere i namespace <b>System.Net.Sockets</b> e <b>System.Net</b>.</p> 
+<p>Per creare un socket si deve specificare: 
+	<ul>
+		<li>La famiglia di indirizzi(ES. ipV4)
+		<li>Il tipo di socket(ad esempio se effettua il controllo di flusso)
+		<li>Il protocollo di rete da utilizzare(TCP o UDP)
+	</ul>
+</p>
+<br>
+<p><b>ES</b>: Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);</p>
+<br>
+
+<p>Occorre poi definire il computer della rete con cui si vuole comunicare:<br>
+	<b>ES</b>: IPEndPointremoteEP = new IPEndPoint (IP address,port number);
+</p>
+<br>
+
+<p>La comunicazione client/server può avvenire utilizzando due tipi di socket:
+	<ul>
+		<li><b>Socket sincrono</b>, cioè il server sospende l' esecuzione in attesa di una richiesta di connessione. (Un client alla volta)
+		<li><b>Socket asincrono</b>, cioè il server non sospende l' esecuzione mentre attende richieste di connessione dai client. (Più client contemporaneamente)
+	</ul>
+</p>
+<br>
+<br>
+
+<center><h3> Esempio C# </h3></center>
+<p>
+	In Crypthat si è scelto di utilizzare i socket <b>asincroni</b> in quanto, essendo una chat, saranno presenti più client.<br>
+	Questo implica l'utilizzo dei metodi "BeginConnect", "BeginReceive", "BeginEnd" e "BeginAccept" della classe System.Net.Sockets.Socket.<br>
+	Nel progetto questi metodi sono implementati in un unica classe che viene utilizzata sia dal Server che dal Client chiamata <b>SocketManager</b>.<br>
+</p>
+<br>
+<script src="https://gist.github.com/artumino/f04441fa7c5001d1503b.js"></script><br>
+<p>
+	Prima di iniziare occore specificare che <b>StateObject</b> è una classe che, come suggerito dalla documentazione ufficiale Microsoft, verrà utilizzata per memorizzare i dati in arrivo da un Socket temporaneamente.<br> 
+	Questo perchè, a differenza dell'<br>Rs232</b> che presenta dei <b>buffer dati permanenti</b> in ricezione ed invio, i <b>Socket</b> una volta ricevuti i dati in memoria, se non salvati in un opportuno buffer, <b>vengono cancellati</b>.
+</p>
+
+
+<!--Annotazioni:
+-Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
+
+

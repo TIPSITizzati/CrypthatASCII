@@ -7,7 +7,7 @@ categories:
 - blog                #important: leave this here
 - Connessioni
 img: rs232.jpg       #place image (850x450) with this name in /assets/img/blog/
-thumb: thumb01.jpg    #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 Per verificare il corretto funzionamento del codice si è implementato lo standard di comunicazione seriale RS232c: ciò significa che i bit di informazione verranno inviati uno alla volta attraverso una connessione seriale implementata attraverso i cavi DB9.<br>
 
