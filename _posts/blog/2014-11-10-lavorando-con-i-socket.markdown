@@ -92,7 +92,7 @@ thumb: ethernet.png     #place thumbnail (70x70) with this name in /assets/img/b
 <p>Nel codice è inoltre utilizzato un Semaforo (<b>tuttoPronto</b>) per la gestione delle accettazioni di connessioni.</p><br>
 <br>
 <h4>Connessione al Server (Client)</h4><br>
-<p>Analogamente al Server, il client utilizza il metodo asincrono <b>BeginConnect</b> ed il corrispondente CallBack <b>Conneso</b> per l'instaurazione di una connessione con il server.</p>
+<p>Analogamente al Server, il client utilizza il metodo asincrono <b>BeginConnect</b> ed il corrispondente CallBack <b>Connesso</b> per l'instaurazione di una connessione con il server.</p>
 <script src="https://gist.github.com/artumino/1dcada56ba3c6c2d0257.js"></script><br>
 <p>L'unica cosa che è necessario precisare è che, una volta connesso, il client non inizia subito ad ascoltare per l'eventuale ricezione di dati.</p>
 <p>Per permettere la ricezione dei dati è stato creato un metodo che è in comune con quello del server chiamato <b>RiceviMessaggio</b>.</p>

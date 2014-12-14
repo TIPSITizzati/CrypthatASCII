@@ -62,7 +62,7 @@ members:
         url: http://twitter.com/xartumx
   - name: Guglielmetti Kevin
     position: Documentazione Tecnica
-    text: Elaboratore di tutti i documenti riguardandi algoritmi e tecnologie utilizzate nel progetto.
+    text: Elaboratore di tutti i documenti riguardanti algoritmi e tecnologie utilizzate nel progetto.
     img: k_guglielmetti.jpg
     social:
       - title: envelope #use for email address

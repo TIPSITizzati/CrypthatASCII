@@ -1,6 +1,6 @@
 ---
 layout: post          #important: don't change this
-title: "L'Interfaccia di Crpyhat"
+title: "L'Interfaccia di Crypthat"
 date: 2014-11-22 19:45:09
 author: Cippelletti Alberto
 categories:
