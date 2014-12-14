@@ -91,5 +91,5 @@ thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/
 <h4>Errori di Inconsistenza</h4>
 <p>
 	Durante lo sviluppo abbiamo incontrato molti problemi di "Inconsistenza" con il passaggio di parametri tra Form diverse. Questo problema si è rivelato poi semplice da risolvere.<br>
-	Ogni Form infatti è una classe <b>pubblica</b>
+	Ogni Form infatti è una classe <b>pubblica</b>, passando le nostre classi nei costruttori (<p>private</p> di default) generavamo questi errori di inconsistenza.<br>
 </p>

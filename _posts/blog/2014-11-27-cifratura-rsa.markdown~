@@ -1,0 +1,58 @@
+---
+layout: post          #important: don't change this
+title: "Cifratura RSA"
+date: 2014-11-27 23:13:37
+author: Guglielmetti Kevin
+categories:
+- blog                #important: leave this here
+- Crittografia
+img: logo.png       #place image (850x450) with this name in /assets/img/blog/
+thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+---
+<center><h3> Concetti Generali </h3></center>
+<p>RSA (dal nome degli inventori) è una tecnica di crittografia asimmetrica utilizzata per cifrare informazioni.</p>
+
+<!--more-->
+<p>
+	 Ogni utente avrà una chiave pubblica e una chiave privata. La chiave pubblica sarà distribuita ai possibili destinatari delle informazioni mentre la chiave privata sarà tenuta segreta. Il messaggio verrà cifrato con la chiave privata e soltanto chi possiede la chiave pubblica relazionata con quella privata potrà decodificare il messaggio. In questo modo si garantisce l' integrità del mittente o la segretezza del messaggio.<br>
+	RSA non è adatto alla trasmissione di grandi quantità di dati; per questo servirà solo per codificare la chiave simmetrica (una sola chiave a 128bit) utilizzata per criptare/decriptare il messaggio.<br>
+</p>
+<br>
+<center><h3>Funzionamento ed Implementazione</h3></center>
+<p>
+	RSA è basato sull'elevata complessità computazionale della fattorizzazione in numeri primi.<br>
+	La generazione delle chiavi avviene seguendo questi passaggi:
+	<ol>
+		<li>Si scelgono a caso due numeri primi, p e q abbastanza grandi da garantire la sicurezza dell'algoritmo (ad esempio di 150 cifre).
+		<li>Si calcolano il loro prodotto n = pq, chiamato modulo e la PHY(n) ovvero per i numeri primi (p-1)*(q-1).
+		<li>Si considera che la fattorizzazione di n è segreta e solo chi sceglie i due numeri primi, p e q, la conosce.
+		<li>Si sceglie poi un numero e (chiamato esponente pubblico), coprimo (primi tra di loro) con PHY(n) e più piccolo di PHY(n).
+		<li>Si calcola il numero d (chiamato esponente privato) tale che il suo prodotto con e sia congruo ad 1 modulo(PHY(n)) ovvero che e*d è congruente ad 1modulo(PHY(n)).
+	</ol><br>
+	<br>
+	La forza dell'algoritmo sta nel fatto che per calcolare d da e o viceversa, non basta la conoscenza di n, ma serve il numero PHY(n) e che il suo calcolo richiede tempi molto elevati; infatti fattorizzare in numeri primi (cioè scomporre un numero nei suoi divisori primi) è un'operazione molto lenta.<br>
+	<br>
+	L'operazione di cifratura, supponendo che il messaggio M sia un numero, corrisponde a <i>C=M<sup>e</sup>mod(n)</i>. Se ne deduce quindi che la chiave pubblica è la combinazione (e,n).<br>
+	L'operazione di decifratura corrisponde a <i>M = C<sup>d</sup>mod(n)</i>. Se ne deduce quindi che la chiave privata è composta da (d,n).<br>
+	<br>
+	In Crypthat la generazione delle chiavi è gestita da <b>RSACipher</b> con il metodo <b>GenerateKeyPair</b> e le chiavi sono memorizzate in un apposito container <b>RSAContainer</b> all'interno di ogni <b>Identity</b>.<br>
+	<script src="https://gist.github.com/artumino/b97f64e063eac03e1c0c.js"></script><br>
+	<br>
+	Nel progetto è inoltre presente un Servizio, <b>RSACryptoService</b>, che consiste in un thread che, una volta avviato, periodicamente rigenera le chiavi RSA e notifica il gestore logico del cambiamento permettendo così ad ogni host di notificare la nuova chiave pubblica a tutti gli altri utenti collegati (tramite il server).<br>
+	<script src="https://gist.github.com/artumino/86895576a16abdbe2a62.js"></script><br>
+</p>
+<br>
+<center><h3>Annotazioni</h3></center>
+<p>
+	Durante lo sviluppo dell'algoritmo il gruppo ha scoperto dell'esistenza della classe <b>System.Numerics.BigInteger</b> che permette di effettuare operazio su numeri interi di <b>INFINITE</b> cifre, ovviamento a discapito della performance.<br>
+	<br>
+	Per la generazione casuale delle chiavi/numeri abbiamo scoperto che la classe Random di default <b>non è sicura</b> è stata infatti creata una nuova classe apposta per la generazione delle chiavi di cifratura chiamata <b>RNGCryptoServiceProvider</b> che genera gruppi di byte in sicurezza.<br>
+	<br>
+	Dato che in RSA è necessario generare 2 numeri <b>primi</p> molto elevati, il controllo sui numeri primi diventa impossibile e si entra nel campo degli algoritmi probabilistici. Guardando su GitHub, si può notare un'implementazione dell'algoritmo di <b>Miller–Rabin</b> che determina se un numero è primo con una certa percentuale di probabilità. Questi algoritmi impiegano pochi secondi in C# a determinare con precisione quasi assoluta se un numero di 150 cifre è primo.<br>
+	<br>
+	Per il calcolo della chiave privata d, è stato necessario effettuare l'operazione inversa del modulo che è risultata essere risolvibile grazie al <b>Teorema Esteso di Eulero</b>.<br>
+	<br>
+	In RSA non è possibile cifrare messaggi M maggiori di n. Questo ha portato il gruppo a cifrare la chiave AES simmetrica con cui si era cifrato il messaggio. Così facendo si garantiva che M fosse minore di n. E' stato inizialmente implementato anche un algoritmo per la cifratura a blocchi di byte minori di n, ma da una ricerca su internet si è concluso che il cifraggio a blocchi avrebbe reso l'algoritmo vulnerabile a diversi tipi di attacchi.<br>
+	<br>
+	RSA non può essere utilizzata come firma digitale, questo perchè non è sempre possibile codificare un messaggio con la propria chiave privata e con un'altra chiave pubblica, in alcuni casi, infatti M elevato alla chiave di uno dei 2 host risulterebbe manggiore della seconda chiave, impedendo così una corretta cifratura del messaggio.<br>
+</p>

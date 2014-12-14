@@ -1,0 +1,40 @@
+---
+layout: post          #important: don't change this
+title: "Un Salto in ASCII Art"
+date: 2014-12-03 16:30:46
+author: Guglielmetti Kevin
+categories:
+- blog                #important: leave this here
+- Cifratura
+img: logo.png       #place image (850x450) with this name in /assets/img/blog/
+thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+---
+<center><h3> Concetti Generali </h3></center>
+<p>La cifratura in ASCII Art è un metodo ingegnoso inventato dal team per rendere illeggibile un messaggio sotto forma di testo ad una macchina.</p>
+
+<!--more-->
+<p>
+	L'ASCII Art, infatti, consiste nella trasformazione di una stringa di testo in una sequenza di caratteri che ne rappresentano la visualizzazione grafica.<br>
+	Così facendo si ottengono una serie di caratteri che solo l'occhio umano riesce ad interpretare in poco tempo.<br>
+	Anche se nel progetto l'ASCII Art è abbinata alle altre 2 techniche di cifratura, rimane comunque un pezzo fondamentale del progetto.<br>
+	<br>
+	Il procedimento grafico della trasformazione ASCII Art è esposto di seguito:<br>
+	<center><img class="img-responsive" src="{{ "/assets/img/posts/ascii-art-processo.png" | prepend: site.baseurl }}" alt=""></center>
+</p>
+<center><h3>Implementazione nel Progetto</h3></center>
+<p>
+	L'implementazione dell'ASCII Art nel progetto è stata effettuata tramite un metodo statico nella classe <b>ASCIIArtChipher</b>.<br>
+	Il metodo dato in input il messaggio sotto forma di testo, restituisce la rappresentazione in ASCII Art del messaggio stesso.<br>
+	Per fare questo è stata creata una immagine BitMap delle dimensioni del messaggio, e con le funzioni grafiche <b>GDI</b> è stato disegnato il testo sull'immagine(a sfondo rosso).<br>
+	Con una combinazione di 2 cicli for si sono attribuiti 2 caratteri diversi alle Aree Rosse o Nere.<br>
+	Così facendo si è generata la più basilare forma di ASCII Art che è utilizzata in Crypthat.<br>
+	<br>
+	<script src="https://gist.github.com/artumino/e44b0475f60988ac9187.js"></script><br>
+</p>
+<center><h3>Considerazioni</h3></center>
+<p>
+	A causa della vicinanza della data di scadenza del progetto, non è stato possibile gestire messaggi di lungezza elevata, che distorgono quindi l'effetto ASCII.<br>
+	La classe è comunque predisposta ad accettare tale modifica.<br>
+	<br>
+	Da un breve studio è inoltre risultato che il rapporto fra <b>pt</b> e <b>px</b> è di 8/6 (utilizzato per la creazione di un immagine di dimensioni pari a quelle del messaggio).<br>
+</p>

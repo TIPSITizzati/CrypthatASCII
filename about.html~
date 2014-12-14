@@ -7,13 +7,19 @@ permalink: /about/
 <div class="container mtb">
     <div class="row">
         <div class="col-lg-6">
-            <img class="img-responsive" src="{{ "/assets/img/Crypthat-About.jpg" | prepend: site.baseurl }}" alt="">
+            <img class="img-responsive" src="{{ "/assets/img/Crypthat-About.png" | prepend: site.baseurl }}" alt="">
         </div>
         <div class="col-lg-6">
-            <h4>More About Our Agency.</h4>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
-            <p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-            <p>Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.</p>
+            <h4>Vuoi sapere di più sul nostro gruppo?</h4>
+            <p>	
+					Il gruppo è formato da cinque persone ed è nato verso l’ inizio di ottobre 2014. Siamo studenti dell’ ISII G. Marconi di Piacenza facenti parte della classe 5G indirizzo informatico. 					Siamo un gruppo eterogeneo, cioè sono presenti persone di differenti classi di rendimento scolastico. Per questo c’è chi si occuperà della programmazione e chi della documentazione del 		progetto.
+				</p>
+				<p>
+					L’ obiettivo del gruppo è quello di portare avanti un progetto basato sulla crittografia che ha due differenti scopi: creare una base per permettere ad altri utenti di proseguire con lo 	sviluppo e cercare di far comprendere a tutti i membri del gruppo le tecniche utilizzate così da migliorarne il bagaglio tecnico.
+				</p>
+				<p>
+					Siamo giovani, produttivi e consapevoli; siamo disposti a ricevere consigli ed  eventuali critiche sul progetto, ma siamo disposti anche a fornirli, per questo abbiamo messo a disposizione il nostro indirizzo e-mail.
+				</p>
             <p><br/><a href="/contact/" class="btn btn-theme">Contact Us</a></p>
         </div>
     </div><! --/row -->
