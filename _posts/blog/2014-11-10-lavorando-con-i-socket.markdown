@@ -118,7 +118,3 @@ thumb: ethernet.png     #place thumbnail (70x70) with this name in /assets/img/b
 	Per questo per ogni metodo sono state previste situazioni di errore critici (disconnessione forzate dal server, etc.) oppure semplici avvisi (Errori nel parsing di messaggi, etc.) accerchiando tutti i metodi da <b>try</b> e <b>catch</b>.<br>
 	Questo approccio si è rivelato efficacie per la gestione degli errori di connettività ma ha complicato il debug dei livelli più alti del progetto (classi logiche).<br>
 </p>
-<!--Annotazioni:
--Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
-
-

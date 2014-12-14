@@ -14,7 +14,7 @@ permalink: /
                 <p><br/><a href="#" class="btn btn-theme">Scoprine di più...</a></p>
             </div>
             <div class="col-md-4">
-                <i class="fa fa-flask"></i>
+                <i class="fa fa-users"></i>
                 <h4>Accessibile a Tutti</h4>
                 <p>Crypthat presenta un'interfaccia semplice ed intuitiva sviluppata per essere utilizzata da tutti, anche i meno tecnologici. La presenza di una forte documentazione del progetto rende inoltre comprensibile al maggior numero di persone le decisioni ed i problemi incontrati durante lo sviluppo.</p>
                 <p><br/><a href="#" class="btn btn-theme">Scoprine di più...</a></p>
@@ -35,7 +35,7 @@ permalink: /
         <div class="col-lg-4 col-lg-offset-1">
             <h4>Ottieni più informazioni sul nostro gruppo.</h4>
             <p>{{ site.about }}</p>
-            <p><br/><a href="{{ "/about/" | prepend: site.baseurl }}" class="btn btn-theme">More Info</a></p>
+            <p><br/><a href="{{ "/about/" | prepend: site.baseurl }}" class="btn btn-theme">Scopri di più</a></p>
         </div>
 
         <div class="col-lg-3">

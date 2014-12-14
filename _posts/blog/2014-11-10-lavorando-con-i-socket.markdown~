@@ -7,7 +7,7 @@ categories:
 - blog                #important: leave this here
 - Connessioni
 img: ethernet.jpg       #place image (850x450) with this name in /assets/img/blog/
-thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+thumb: ethernet.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
 <p>Un altro metodo per il trasferimento di dati attraverso una rete è utilizzare i socket: questi permettono a due applicazioni(anche di macchine separate) di scambiarsi dei dati.</p>
@@ -118,7 +118,5 @@ thumb: rs232.png     #place thumbnail (70x70) with this name in /assets/img/blog
 	Per questo per ogni metodo sono state previste situazioni di errore critici (disconnessione forzate dal server, etc.) oppure semplici avvisi (Errori nel parsing di messaggi, etc.) accerchiando tutti i metodi da <b>try</b> e <b>catch</b>.<br>
 	Questo approccio si è rivelato efficacie per la gestione degli errori di connettività ma ha complicato il debug dei livelli più alti del progetto (classi logiche).<br>
 </p>
-<!--Annotazioni:
--Per trasferire degli array di bytes senza che questi vengano modificati dell’ Encoding si deve utilizzare una stringa Base64. !-->
 
 
