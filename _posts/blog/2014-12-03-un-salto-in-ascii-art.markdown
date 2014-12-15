@@ -6,8 +6,8 @@ author: Guglielmetti Kevin
 categories:
 - blog                #important: leave this here
 - Crittografia
-img: logo.png       #place image (850x450) with this name in /assets/img/blog/
-thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+img: ascii-art.png       #place image (850x450) with this name in /assets/img/blog/
+thumb: ascii.gif     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
 <p>La cifratura in ASCII Art è un metodo ingegnoso inventato dal team per rendere illeggibile un messaggio sotto forma di testo ad una macchina.</p>

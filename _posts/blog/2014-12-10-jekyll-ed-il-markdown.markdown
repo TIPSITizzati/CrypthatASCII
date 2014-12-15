@@ -6,8 +6,8 @@ author: Guglielmetti Kevin
 categories:
 - blog                #important: leave this here
 - sito
-img: logo.png       #place image (850x450) with this name in /assets/img/blog/
-thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+img: jekyll.png       #place image (850x450) with this name in /assets/img/blog/
+thumb: sito.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
 <p>Jekyll è un programma per linux che permette la compilazione di siti statici, dinamicamente.</p>

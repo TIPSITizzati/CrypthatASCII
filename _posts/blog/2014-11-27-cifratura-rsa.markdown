@@ -6,8 +6,8 @@ author: Guglielmetti Kevin
 categories:
 - blog                #important: leave this here
 - Crittografia
-img: logo.png       #place image (850x450) with this name in /assets/img/blog/
-thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
+img: rsa.jpg       #place image (850x450) with this name in /assets/img/blog/
+thumb: rsa.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
 <p>RSA (dal nome degli inventori) è una tecnica di crittografia asimmetrica utilizzata per cifrare informazioni.</p>

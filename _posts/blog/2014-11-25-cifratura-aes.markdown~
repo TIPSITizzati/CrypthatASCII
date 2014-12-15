@@ -6,7 +6,7 @@ author: Guglielmetti Kevin
 categories:
 - blog                #important: leave this here
 - Crittografia
-img: logo.png       #place image (850x450) with this name in /assets/img/blog/
+img: aes.jpg       #place image (850x450) with this name in /assets/img/blog/
 thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/thumbs/
 ---
 <center><h3> Concetti Generali </h3></center>
@@ -43,7 +43,7 @@ thumb: logo.png     #place thumbnail (70x70) with this name in /assets/img/blog/
 	<br>
 	Nel progetto è stato combinato ad RSA perchè avendo una chiave di lunghezza fissa (128bit) risulta più semplice da codificare rispettando le limitazioni di RSA.<br>
 	<br>
-	La classe predefinita di C# per l'utilizzo di AES è <b>System.Security.Aes</b> che, data in input le 2 chiavi random generate di lunghezza fissa (di solito 128bit) ed il messaggio in byte, restituisce un array di byte contenente i dati cifrati.<br>
+	La classe predefinita di C# per l'utilizzo di AES è <b>System.Security.Cryptography.Aes</b> che, data in input le 2 chiavi random generate di lunghezza fissa (di solito 128bit) ed il messaggio in byte, restituisce un array di byte contenente i dati cifrati.<br>
 	La classe AES Chiper, utilizza la classe di sistema ma presenta 2 metodi, <b>Encrypt</b> che genera le chiavi e cifra il messaggio in input restituendo un <b>jagged-array</b> contenente le 2 chiavi ed il messaggio cifrato.<br>
 	<b>Decrypt</b> invece si affida alla funzione di decifratura standard di AES.<br>
 <script src="https://gist.github.com/artumino/640c270af1d530faf39a.js"></script><br>
