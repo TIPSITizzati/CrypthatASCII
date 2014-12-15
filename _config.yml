@@ -73,21 +73,21 @@ members:
     img: a_cippelletti.png
     social:
       - title: envelope #use for email address
-        url: mailto:name@domain.com
+        url: mailto:acippelletti@gmail.com
   - name: Arcelli Bruno
     position: Documentazione di Progetto
     text: Mantenitore dei documenti di progetto
     img: b_arcelli.jpg
     social:
       - title: envelope #use for email address
-        url: mailto:name@domain.com
+        url: mailto:arce.theeagle@gmail.com
   - name: Iazzetta Giovanni
     position: Documentazione di Progetto
     text: Mantenitore dei documenti di progetto
     img: g_iazzetta.jpg
     social:
       - title: envelope #use for email address
-        url: mailto:name@domain.com
+        url: mailto:giovanni.iazzetta.96@gmail.com
     
 # Short text about your company. Shown in footer on every page and also separately on Home and Contact page.
 about: "Il gruppo è stato formato per una serie di progetti scolastici di cui Crypthat è il primo. Sebbene le disuguaglianze interne cerca costantemente di rendere al meglio rispettando tempi e consegne previste."
