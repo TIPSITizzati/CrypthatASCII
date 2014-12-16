@@ -27,6 +27,7 @@ namespace Crypthat_Client
         {
             this.Me.Name = Name;
 
+            // Metodo Inizializza di GestoreLogico(string)
             Inizializza(NomePorta);
 
             Autenticazione();
@@ -37,16 +38,19 @@ namespace Crypthat_Client
         {
             this.Me.Name = Name;
 
+            // Metodo Inizializza di GestoreLogico(IPEndpoint)
             Inizializza(serverEndpoint);
 
             Autenticazione();
         }
 
+        // Avvia il processo di autenticazione con il server
         private void Autenticazione()
         {
             // Autenticazione con il server
             if (Destinatari.Count > 0)
             {
+                // Invia un messaggio di HALOHA per far conoscere il proprio nome
                 ConnectionManager.InviaMessaggio("HALOHA:" + Me.Name + ";" + Me.SessionKey, Destinatari[0]);
                 Destinatari.Remove(Destinatari[0]);
             }
@@ -60,6 +64,8 @@ namespace Crypthat_Client
             string SessionKey = Data[1];
 
             Identity temp = new Identity(Name, SessionKey);
+            
+            // A seconda della Modalità Operativa cambiano i parametri settati
             switch (opMode)
             {
                 case ModalitaOperativa.Rs232:
@@ -109,15 +115,16 @@ namespace Crypthat_Client
             // Ricompone le parti del messaggio cifrato con AES
             string[] Parts = Data.Split(new string[] { "<KEY>" }, StringSplitOptions.RemoveEmptyEntries);
             string[] Keys = Parts[1].Split(new string[] { "<IV>" }, StringSplitOptions.RemoveEmptyEntries);
-            byte[] AES_Messaggio = Convert.FromBase64String(Parts[0].Replace("<\\", "<"));
 
+            // Ricava i byte relativi a Messaggio e chiavi AES (che sono convertiti in Base64 durante l'invio)
+            byte[] AES_Messaggio = Convert.FromBase64String(Parts[0].Replace("<\\", "<"));
             byte[] AES_KEY = RSACipher.EncryptDecrypt(Convert.FromBase64String(Keys[0]), Me.RSAContainer.PrivateKey);
             byte[] AES_IV = RSACipher.EncryptDecrypt(Convert.FromBase64String(Keys[1]), Me.RSAContainer.PrivateKey);
-            string Messaggio = "";
 
+            // Decifra il messaggio con la chiave simmetrica ottenuta
+            string Messaggio = "";
             try
             {
-                // Decifra il messaggio con la chiave simmetrica ottenuta
                 Messaggio = AESCipher.Decrypt(AES_Messaggio, AES_KEY, AES_IV);
             }
             catch (Exception ex)
@@ -165,7 +172,7 @@ namespace Crypthat_Client
             }
         }
 
-        // Registra la nuova chiave ricevuta
+        // Registra la nuova chiave pubblica ricevuta
         protected override void RegistraCriptoKey(string Dati, Identity Mittente)
         {
             if(Mittente.RSAContainer == null)

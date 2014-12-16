@@ -145,9 +145,12 @@ namespace Crypthat_Common.Connessioni
             // Converte la stringa in formata Unicode
             byte[] byteData = Encoding.Unicode.GetBytes(Dati.Replace("<", "<\\") + "<eof>");
 
-            // Inizia ad inviare i dati ad il dispositivo connesso
-            Destinatario.Sock.BeginSend(byteData, 0, byteData.Length, SocketFlags.None,
-                new AsyncCallback(Inviato), Destinatario);
+            lock (Destinatario)
+            {
+                // Inizia ad inviare i dati ad il dispositivo connesso
+                Destinatario.Sock.BeginSend(byteData, 0, byteData.Length, SocketFlags.None,
+                    new AsyncCallback(Inviato), Destinatario);
+            }
         }
 
         // Callback per l'avennuto trasferimento dei dati

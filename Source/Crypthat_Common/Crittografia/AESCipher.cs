@@ -33,12 +33,12 @@ namespace Crypthat_Common.Crittografia
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                // Crea uno stream per la codifica del messaggio
-                using (MemoryStream msEncrypt = new MemoryStream())
+                // Crea le stream per la codifica del messaggio
+                using (MemoryStream msEncrypt = new MemoryStream()) // Stream in memoria, per velocizzare l'operazione
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) // Stream che applica la crittografia AES
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))    // Oggetto standard StreamWriter per la scrittura nello stream
                         {
                             // Scrive tutti i dati del messaggio
                             swEncrypt.Write(Message);
@@ -53,9 +53,10 @@ namespace Crypthat_Common.Crittografia
             return AES_DATA;
         }
 
+        // Basata sulla documentazione microsoft
         public static string Decrypt(byte[] cipherText, byte[] Key, byte[] IV)
         {
-            // Check arguments.
+            // Controlla che i parametri inseriti siano validi
             if (cipherText == null || cipherText.Length <= 0)
                 throw new ArgumentNullException("cipherText");
             if (Key == null || Key.Length <= 0)
@@ -63,30 +64,26 @@ namespace Crypthat_Common.Crittografia
             if (IV == null || IV.Length <= 0)
                 throw new ArgumentNullException("Key");
 
-            // Declare the string used to hold
-            // the decrypted text.
-            string plaintext = null;
+            // plainText conterrà il messaggio decifrato
+            string plaintext = "";
 
-            // Create an Aes object
-            // with the specified key and IV.
+            // Crea un oggetto Aes con le chiavi specificate
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
 
-                // Create a decrytor to perform the stream transform.
+                // Crea un oggetto decryptor per decifrare il messaggio
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                // Create the streams used for decryption.
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                
+                // Crea le stream per la codifica del messaggio
+                using (MemoryStream msDecrypt = new MemoryStream(cipherText)) // Stream in memoria, per velocizzare l'operazione
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read)) // Stream che decifra i dati letti
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))    // Oggetto standard StreamReader per la lettura dello stream
                         {
-
-                            // Read the decrypted bytes from the decrypting stream
-                            // and place them in a string.
+                            // Legge la serie di byte decifrati che indica il messaggio e la aggiunge al testo
                             plaintext = srDecrypt.ReadToEnd();
                         }
                     }

@@ -47,6 +47,7 @@ namespace Crypthat_Common.Connessioni
 
         public void InizializzaPorta(Identity destinatario, string PortName)
         {
+            // Imposta i parametri della porta
             destinatario.serialPort = new SerialPort(PortName);
             destinatario.serialPort.BaudRate = 9600;
             destinatario.serialPort.DataBits = 8;

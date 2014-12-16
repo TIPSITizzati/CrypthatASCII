@@ -46,10 +46,10 @@ namespace Crypthat_Common.Crittografia
             return BigInteger.ModPow(C, D, N).ToByteArray();
         }
 
-        // Ritorna un numero grande non divisibile per i primi 65000 numeri primi
+        // Ritorna un numero grande che è probabilmente primo
         public static BigInteger GetProbablePrime(int Length)
         {
-            // Genera un numero casuale di lungezza richiesta
+            // Genera un numero casuale di lungezza richiesta (RNGCryptoServiceProvider fornisce una serie sicura di byte random)
             var rng = new RNGCryptoServiceProvider();
             byte[] bytes = new byte[Length / 8];
 
@@ -63,26 +63,32 @@ namespace Crypthat_Common.Crittografia
             return number;
         }
 
+        // Metodo che applica l'algoritmo di Miller–Rabin
         public static bool IsProbabilyPrime(BigInteger n, int k)
         {
-            bool result = false;
+            // Gestisce i valori ovvi
             if (n < 2)
                 return false;
             if (n == 2)
                 return true;
-            // return false if n is even -> divisbla by 2
-            if (n % 2 == 0)
+
+            // Se il numero è pari, allora non è primo
+            if (n.IsEven)
                 return false;
-            //writing n-1 as 2^s.d
-            BigInteger d = n - 1;
+
+            // Restituisce un numero che rappresenta n - 1 come (2^s)*d con d dispari
+            BigInteger d = BigInteger.Subtract(n, BigInteger.One);
             BigInteger s = 0;
             while (d % 2 == 0)
             {
-                d >>= 1;
-                s = s + 1;
+                d >>= 1; // Divisione veloce per 2 (Utilizza lo shift)
+                s = BigInteger.Add(s, BigInteger.One);
             }
+
+            // Per tutti i tentativi
             for (int i = 0; i < k; i++)
             {
+                // Genera un numero a compreso tra [2, n - 2]
                 BigInteger a;
                 do
                 {
@@ -90,34 +96,38 @@ namespace Crypthat_Common.Crittografia
                 }
                 while (a < 2 || a >= n - 2);
 
+                // Se (a^d)%n è 1 allora probabilmente il numero è primo
                 if (BigInteger.ModPow(a, d, n) == 1) return true;
-                for (int j = 0; j < s - 1; j++)
+
+                // Finchè r < s-1
+                for (int r = 0; r < s - 1; r++)
                 {
-                    if (BigInteger.ModPow(a, 2 * j * d, n) == n - 1)
+                    // Se il [a^(2*r*d)]%n è uguale a n-1 allora probabilmente n è un numero primo
+                    if (BigInteger.ModPow(a, 2 * r * d, n) == n - 1)
                         return true;
                 }
-                result = false;
-            }
-            return result;
+            } 
+            return false;
         }
 
+        // Genera un numero intero sotto un determinato numero (Essendo ad infinite cifre non è possibile usare la funzione random)
         public static BigInteger RandomIntegerBelow(BigInteger bound)
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            //Get a byte buffer capable of holding any value below the bound
-            byte[] buffer = (bound << 16).ToByteArray(); // << 16 adds two bytes, which decrease the chance of a retry later on
+            // Crea un buffer in grado di contenere un numero minore al numero dato
+            byte[] buffer = (bound << 16).ToByteArray(); // << 16 aggiunge 2 byte, è un trucco per ridurre i tentativi successivi
 
-            //Compute where the last partial fragment starts, in order to retry if we end up in it
-            BigInteger generatedValueBound = BigInteger.One << (buffer.Length * 8 - 1); //-1 accounts for the sign bit
+            // Calcola dove era arrivato l'ultimo frammento parziale inizia (oltre il valore bound)
+            BigInteger generatedValueBound = BigInteger.One << (buffer.Length * 8 - 1); //-1 modifica il bit del segno
             BigInteger validityBound = generatedValueBound - generatedValueBound % bound;
 
             while (true)
             {
-                //generate a uniformly random value in [0, 2^(buffer.Length * 8 - 1))
+                // Genera un valore random tra [0, 2^(buffer.Length * 8 - 1))
                 rng.GetBytes(buffer);
                 BigInteger r = BigInteger.Abs(new BigInteger(buffer));
 
-                //return unless in the partial fragment
+                // Ritorna il valore nel caso non si è nel frammento parziale
                 if (r >= validityBound) continue;
                 return r % bound;
             }
@@ -132,46 +142,52 @@ namespace Crypthat_Common.Crittografia
             return 3;
         }
 
+        // Applica il Teorema di Esteso di Euclide (Massimo Comune Divisore esteso) per calcolare il modulo inverso
         public static BigInteger ModularInverse(BigInteger a, BigInteger b)
         {
-            BigInteger inv, u1, u3, v1, v3, t1, t3, q, iter;
-            /* Step X1. Initialise */
-            u1 = 1;
-            u3 = a;
-            v1 = 0;
-            v3 = b;
-            /* Remember odd/even iterations */
-            iter = 1;
-            /* Step X2. Loop while v3 != 0 */
-            while (v3 != 0)
+            // Dichiarazione ed inizializzazione dei valori utilizzati
+            BigInteger inv, lastY, newA, lastX, newB, x, modulus, q, iter;
+            lastY = 1;
+            newA = a;   // Per evitare di modificare a
+            lastX = 0;
+            newB = b;   // Per evitare di modificare b
+            iter = 1;   // Utilizzato per ricordare le iterazione pari o dispari
+
+            // Finche b != 0 (nel nostro caso newB)
+            while (newB != 0)
             {
-                /* Step X3. Divide and "Subtract" */
-                q = u3 / v3;
-                t3 = u3 % v3;
-                t1 = u1 + q * v1;
-                /* Swap */
-                u1 = v1; v1 = t1; u3 = v3; v3 = t3;
+                q = newA / newB;        // Divide A/B (Quoziente)
+                modulus = newA % newB;  // Ottiene il modulo (Resto)
+                x = lastY + q * lastX;  // Calcola il nuovo X
+                
+                // Inverte i valori
+                lastY = lastX; lastX = x; newA = newB; newB = modulus;
                 iter = -iter;
             }
-            /* Make sure u3 = gcd(u,v) == 1 */
-            if (u3 != 1)
-                return 0;   /* Error: No inverse exists */
-            /* Ensure a positive result */
+
+            // Si assicura che newA = gcd(u,v) == 1
+            if (newA != 1)
+                return 0;   // Se non è così non esiste l'inverso
+
+            // Si assicura che il risultato sia positivo
             if (iter < 0)
-                inv = b - u1;
+                inv = b - lastY;
             else
-                inv = u1;
+                inv = lastY;
             return inv;
         }
     
         // Servizio in background che gestisce la generazione delle chiavi
         public class RSACryptoService
         {
+            // Thread utilizzato come timer
             public Thread RefreshThread;
 
+            // Evento chiamato al cambio di chiavi
             public delegate void RSACallBack(RSAContainer newKeys);
             public event RSACallBack NewKeyPair;
 
+            // Avvia il timer al numero di secondi specificato
             public void Start(int Timer)
             {
                 this.RefreshThread = new Thread(() => ManageKeys(Timer));
@@ -179,6 +195,7 @@ namespace Crypthat_Common.Crittografia
                 this.RefreshThread.Start();
             }
 
+            // Se il timer è attivo, lo killa
             public void Stop()
             {
                 if(this.RefreshThread.IsAlive)
@@ -187,12 +204,17 @@ namespace Crypthat_Common.Crittografia
                 }
             }
 
+            // Loop del thread che genera le chiavi ogni X secondi
             public void ManageKeys(int Timer)
             {
                 while(true)
                 {
+                    // Genera la data da cui può iniziare a generare le chiavi (Ora + Timer secondi)
                     DateTime nextAlarm = DateTime.Now.AddSeconds(Timer);
+
                     while (DateTime.Now < nextAlarm) { }    //Attende che siano trascorsi i secondi richiesti
+                    
+                    // Se è già connesso alla rete (quindi è presente almeno una chiave), genera la nuova coppia di chiavi
                     if(NewKeyPair != null)
                         NewKeyPair(GenerateKeyPair(512));
                 }

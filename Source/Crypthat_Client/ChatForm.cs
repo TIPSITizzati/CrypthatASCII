@@ -16,9 +16,9 @@ namespace Crypthat_Client
 {
     public partial class ChatForm : Form
     {
-        private Identity dest;
-        private GestoreLogicoClient gestoreClient;
-        private UserList parent;
+        private Identity dest;  // Utente di destinazione a cui è legato il form
+        private GestoreLogicoClient gestoreClient; //Riferimento al GestoreLogico
+        private UserList parent;    // Riferimento alla lista utenti, utilizzato per rimuovere la chat dalle chat attive in caso di chiusura
 
         public ChatForm(UserList parent, GestoreLogicoClient currentGestore, Identity dest)
         {
@@ -34,13 +34,15 @@ namespace Crypthat_Client
             // Imposta testi di default
             lblName.Text = dest.Name;
             txtSend.Select();
-            txtSend.KeyPress += txtSend_KeyPress;
-
             txtChat.ReadOnly = true;
+
+            // Imposta l'evento per bloccare l'Invio
+            txtSend.KeyPress += txtSend_KeyPress;
 
             this.Text = "Crypthat - Chat ( " + dest.Name + " )";
         }
 
+        // Evento che intercetta l'Enter premuto nella textBox dell'invio
         private void txtSend_KeyPress(object sender, KeyPressEventArgs e)
         {
             if((Keys)e.KeyChar == Keys.Enter)
@@ -60,11 +62,13 @@ namespace Crypthat_Client
             InviaMessaggio(true);
         }
 
+        // Se la Chat si sta chiudendo, allora si rimuove dalla lista delle chat attive
         private void ChatForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             parent.chatAttive.Remove(dest);
         }
 
+        // Metodo per l'invio del messaggio al destinatario
         private void InviaMessaggio(bool ASCII = false)
         {
             string Messaggio = txtSend.Text.Trim('\n', '\r', ' ');
@@ -73,16 +77,17 @@ namespace Crypthat_Client
             {
                 if (!ASCII)
                 {
-                    // Invia il messaggio
+                    // Invia il messaggio sotto forma di test
                     gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
                     ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
                     txtSend.Clear();
                 }
                 else
                 {
+                    // Trasfroma il messaggio in ASCII Art
                     Messaggio = "\n" + ASCIIArtCipher.GenerateASCIIArt(Messaggio, 12);
 
-                    // Invia il messaggio
+                    // Invia il messaggio sotto forma di ASCII Art
                     gestoreClient.InviaMessaggio(Messaggio, dest, chkEncrypt.Checked);
                     ScriviMessaggio(Messaggio, gestoreClient.Me, chkEncrypt.Checked ? Color.DarkGreen : txtChat.ForeColor);
                     txtSend.Clear();
@@ -96,12 +101,12 @@ namespace Crypthat_Client
             // Colora il testo ed effettua l'autoscroll
             txtChat.SelectionStart = txtChat.TextLength;
             txtChat.SelectionLength = 0;
-
             txtChat.SelectionColor = Colore;
             txtChat.AppendText(String.Format("[{0}] {1} - {2}\n", DateTime.Now.ToShortTimeString(), Mittente.Name, Messaggio));
             txtChat.SelectionColor = txtChat.ForeColor;
             txtChat.ScrollToCaret();
 
+            // Fa lampeggiare la chat
             if(!this.Focused)
             {
                 FlashWindowEx(this);
@@ -109,6 +114,8 @@ namespace Crypthat_Client
 
         }
 
+        // Metodo chiamato dalla lista utenti se la chat corrente è legata ad un utente che si è appena disconnesso
+        // Impedisce l'invio di ulteriori messaggi
         public void DisabilitaChat()
         {
             btnSend.Enabled = false;

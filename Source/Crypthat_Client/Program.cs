@@ -23,6 +23,8 @@ namespace Crypthat_Client
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+
+                //Crea il Form senza legarlo al processo
                 MainForm mainForm = new MainForm();
                 mainForm.Show();
                 Application.Run();
@@ -39,7 +41,7 @@ namespace Crypthat_Client
                 string Address = Console.ReadLine();
                 if (Address == "")
                     Address = "127.0.0.1";
-                mng = new GestoreLogicoClient(ModalitaOperativa.Sockets, new Identity(Nome, null), new System.Net.IPEndPoint(System.Net.IPAddress.Parse(Address), 11000));
+                mng = new GestoreLogicoClient(ModalitaOperativa.Sockets, Nome, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(Address), 11000));
                 mng.OnMessaggioRicevuto += PrintMessaggio;
                 mng.OnUtenteRegistrato += mng_OnUtenteRegistrato;
 

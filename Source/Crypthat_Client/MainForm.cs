@@ -22,12 +22,12 @@ namespace Crypthat_Client
         {
             Random rnd = new Random();
 
-            // Impedisce la modifica del form
+            // Impedisce la modifica delle dimensioni del form
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 
             // Imposta i valori di default della schermata iniziale
             txtNome.MaxLength = 18;
-            txtNome.Text = "Utente_" + rnd.Next(10000);
+            txtNome.Text = "Utente_" + rnd.Next(10000); //Nome utente random
             gbSockets.Enabled = true;
             gbRs232.Enabled = false;
             cbNomePorta.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
@@ -50,25 +50,27 @@ namespace Crypthat_Client
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(txtNome.Text) || !ConvalidaNome(txtNome.Text))
+            // In caso di connessione, controlla che tutti i parametri inseriti siano validi
+            if (String.IsNullOrEmpty(txtNome.Text) || !ConvalidaNome(txtNome.Text)) // Il nome deve essere presente e non deve contenere determinati caratteri
             {
                 MessageBox.Show("Nome inserito non valido. Controlla di avere inserito un nome che non contenga caratteri speciali (\" :;?~ \")", "Errore");
                 return;
             }
 
-            if(rbRs232.Checked && !cbNomePorta.Items.Contains(cbNomePorta.Text))
+            if(rbRs232.Checked && !cbNomePorta.Items.Contains(cbNomePorta.Text))    // Il nome della porta seriale deve essere corretto (in modalità Rs232)
             {
                 MessageBox.Show("Nome porta invalido, selezionare una porta dall'elenco.", "Errore");
                 return;
             }
 
             System.Net.IPAddress address = null;
-            if (rbSockets.Checked && !System.Net.IPAddress.TryParse(txtIpAddress.Text, out address))
+            if (rbSockets.Checked && !System.Net.IPAddress.TryParse(txtIpAddress.Text, out address))    // L'indirizzo IP inserito deve essere valido (in modalità Sockets)
             {
                 MessageBox.Show("Indirizzo IP invalido!", "Errore");
                 return;
             }
             
+            // Inizializza il form della lista utenti a seconda della modalità aporativa
             UserList list = null;
             if(rbSockets.Checked)
             {
@@ -76,11 +78,12 @@ namespace Crypthat_Client
                 list = new UserList(txtNome.Text, ModalitaOperativa.Sockets, endPoint);
             }
             else if(rbRs232.Checked)
-            {
                 list = new UserList(txtNome.Text, ModalitaOperativa.Sockets, cbNomePorta.Text);
-            }
+
+            // Mostra il form della lista utenti
             list.Show();
 
+            // Chiude il form corrente (senza terminare l'apllicazione)
             this.Close();
         }
 
