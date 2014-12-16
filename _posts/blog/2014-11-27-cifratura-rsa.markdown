@@ -50,7 +50,7 @@ thumb: rsa.png     #place thumbnail (70x70) with this name in /assets/img/blog/t
 	<br>
 	Dato che in RSA è necessario generare 2 numeri <b>primi</b> molto elevati, il controllo sui numeri primi diventa impossibile e si entra nel campo degli algoritmi probabilistici. Guardando su GitHub, si può notare un'implementazione dell'algoritmo di <b>Miller–Rabin</b> che determina se un numero è primo con una certa percentuale di probabilità. Questi algoritmi impiegano pochi secondi in C# a determinare con precisione quasi assoluta se un numero di 150 cifre è primo.<br>
 	<br>
-	Per il calcolo della chiave privata d, è stato necessario effettuare l'operazione inversa del modulo che è risultata essere risolvibile grazie al <b>Teorema Esteso di Eulero</b>.<br>
+	Per il calcolo della chiave privata d, è stato necessario effettuare l'operazione inversa del modulo che è risultata essere risolvibile grazie al <b>Teorema Esteso di Euclide</b>.<br>
 	<br>
 	In RSA non è possibile cifrare messaggi M maggiori di n. Questo ha portato il gruppo a cifrare la chiave AES simmetrica con cui si era cifrato il messaggio. Così facendo si garantiva che M fosse minore di n. E' stato inizialmente implementato anche un algoritmo per la cifratura a blocchi di byte minori di n, ma da una ricerca su internet si è concluso che il cifraggio a blocchi avrebbe reso l'algoritmo vulnerabile a diversi tipi di attacchi.<br>
 	<br>
